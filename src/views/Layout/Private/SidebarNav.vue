@@ -12,14 +12,23 @@
                             <ul role="list" class="-mx-2 space-y-1">
                                 <li v-for="item in navigation" :key="item.name">
                                     <RouterLink :to="item.href"
-                                        :class="[item.current ? 'bg-gray-50 text-primaryRed' : 'text-white hover:text-primaryRed hover:bg-gray-50', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold']">
+                                        :class="[$route.path == item.href ? 'bg-gray-50 text-primaryRed' : 'text-white hover:text-primaryRed hover:bg-gray-50', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold']">
                                         <component :is="item.icon"
-                                            :class="[item.current ? 'text-primaryRed' : 'text-white group-hover:text-primaryRed', 'h-6 w-6 shrink-0']"
+                                            :class="[$route.path == item.href ? 'text-primaryRed' : 'text-white group-hover:text-primaryRed', 'h-6 w-6 shrink-0']"
                                             aria-hidden="true" />
                                         {{ item.name }}
                                     </RouterLink>
                                 </li>
                             </ul>
+                        </li>
+                        <li class="-mx-3 mt-auto mb-2">
+                            <button @click="router.push({ path: '/' })"
+                                :class="['text-white hover:text-primaryRed hover:bg-gray-50', 'group w-full flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold']">
+                                <ArrowLeftEndOnRectangleIcon
+                                    :class="['text-white group-hover:text-primaryRed', 'h-6 w-6 shrink-0']"
+                                    aria-hidden="true" />
+                                Logout
+                            </button>
                         </li>
                     </ul>
                 </nav>
@@ -30,8 +39,10 @@
     
 <script setup>
 // import { ref } from 'vue'
-import { FireIcon, HomeIcon, MapIcon, UserGroupIcon, } from '@heroicons/vue/24/outline'
+import { FireIcon, HomeIcon, MapIcon, UserGroupIcon, ArrowLeftEndOnRectangleIcon } from '@heroicons/vue/24/outline'
 import { RouterLink } from 'vue-router';
+import router from '@/router';
+
 
 const navigation = [
     { name: 'Dashboard', href: '/app/dashboard', icon: HomeIcon, current: true },

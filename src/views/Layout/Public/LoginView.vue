@@ -3,7 +3,7 @@ import router from '@/router';
 
 
 function login() {
-  router.push({path: '/dashboard'});
+  router.push({path: '/app/dashboard'});
 }
 </script>
 

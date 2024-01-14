@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '@/views/Layout/Public/LoginView.vue'
 import DashboardView  from '@/views/Layout/Private/Dashboard/DashboardView.vue'
+import InteractiveMap  from '@/views/Layout/Private/InteractiveMap/InteractiveMap.vue'
+import HeatMap  from '@/views/Layout/Private/HeatMap/HeatMapView.vue'
+import AccountsView  from '@/views/Layout/Private/ManageAccounts/AccountsView.vue'
 import PrivateView  from '@/views/Layout/Private/PrivateView.vue'
 
 const router = createRouter({
@@ -24,17 +27,17 @@ const router = createRouter({
         {
           path: '/app/accounts',
           name: 'AGAP | Accounts',
-          component: DashboardView
+          component: AccountsView
         },
         {
           path: '/app/interactive-map',
           name: 'AGAP | Interactive Map',
-          component: DashboardView
+          component: InteractiveMap
         },
         {
           path: '/app/heatmap',
           name: 'AGAP | Heatmap',
-          component: DashboardView
+          component: HeatMap
         },
       ],
     },
