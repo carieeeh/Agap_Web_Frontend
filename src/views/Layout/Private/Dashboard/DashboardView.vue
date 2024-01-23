@@ -63,10 +63,11 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 const chartData = reactive({
     labels: ['January', 'February', 'March'],
     datasets: [
-        { data: [10, 15, 12] },
-        { data: [15, 20, 40] },
-        { data: [5, 30, 10] },
-        { data: [50, 1, 15] },
+        { data: [10, 15, 12], label: "Fire", borderColor: '#FF1F1E', fill: true },
+        { data: [15, 20, 40], label: "Earthquake", borderColor: '#FFC700', fill: true },
+        { data: [5, 30, 10], label: "Medical", borderColor: '#22C55E', fill: true },
+        { data: [50, 1, 15], label: "Flood", borderColor: '#2A67EB', fill: true },
+        { data: [0, 5, 30], label: "Police", borderColor: '#38BDF8', fill: true },
     ],
 })
 
