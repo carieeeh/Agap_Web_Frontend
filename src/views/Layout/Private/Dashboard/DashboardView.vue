@@ -44,7 +44,7 @@
                 <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">{{ item.stat }}</dd>
             </div>
         </dl>
-        <div class="flex justify-center items-center w-full h-80 px-5 mt-5">
+        <div class="flex justify-center items-center w-full px-5 mt-5">
             <Line :data="chartData" :options="chartOptions" aria-label="Accident Reports Chart" />
         </div>
     </div>
