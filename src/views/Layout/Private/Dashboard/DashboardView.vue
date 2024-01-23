@@ -56,13 +56,18 @@ import { Listbox, ListboxButton, ListboxLabel, ListboxOption, ListboxOptions } f
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid'
 
 import { Line } from 'vue-chartjs'
-import {   Chart as ChartJS,  CategoryScale, LinearScale,  PointElement,LineElement, Title, Tooltip, Legend} from 'chart.js'
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
 const chartData = reactive({
     labels: ['January', 'February', 'March'],
-    datasets: [{ data: [40, 20, 12] }],
+    datasets: [
+        { data: [10, 15, 12] },
+        { data: [15, 20, 40] },
+        { data: [5, 30, 10] },
+        { data: [50, 1, 15] },
+    ],
 })
 
 const chartOptions = { responsive: true }
