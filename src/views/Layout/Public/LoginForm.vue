@@ -12,6 +12,9 @@ const login = inject('login');
             <div>
                 <form action="#" method="POST" class="space-y-6">
                     <div>
+                        <Vueform>
+                            <TextElement name="hello_world" label="Email Address" />
+                        </Vueform>
                         <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email address</label>
                         <div class="mt-2">
                             <input id="email" name="email" type="email" autocomplete="email" required=""
