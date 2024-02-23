@@ -1,7 +1,18 @@
 <script setup>
-import { inject } from 'vue';
+import { onMounted } from 'vue';
+import { ref } from 'vue';
+import { useAuthentication } from '@/stores/authetication'
 
-const login = inject('login');
+const form$ = ref(null);
+const auth = useAuthentication();
+const passwordInputType = ref('password');
+
+const showPassword = (event) => {
+    passwordInputType.value = event.target.checked ? 'text' : 'password';
+}
+onMounted(() => {
+
+});
 </script>
 
 <template>
@@ -10,18 +21,22 @@ const login = inject('login');
             <p class="text-4xl font-bold">Welcome back!</p>
             <p class="text-gray-500 py-5">Login into your accout.</p>
             <div>
-                <Vueform>
-                    <TextElement name="hello_world" label="Email Address" type="email" size="sm" />
-                    <TextElement name="hello_world" label="Password" type="password" size="sm" />
+                <Vueform ref="form$" :display-errors="false">
+                    <TextElement name="email" rules="required|email" label="Email" type="email" size="sm" />
+                    <TextElement name="password" label="Password" :inputType="passwordInputType" type="text" size="sm" />
+                    <CheckboxElement @click="showPassword($event)" size="sm" class="w-fit whitespace-nowrap" name="showPwd"
+                        text="Show password" />
                 </Vueform>
+                <div>
+                </div>
                 <div class="text-sm leading-6">
                     <!-- <a href="#" class="font-semibold text-indigo-600 hover:text-indigo-500">Forgot password?</a> -->
                 </div>
             </div>
 
             <div>
-                <button type="submit" @click="login()"
-                    class="flex w-full justify-center rounded-md bg-primaryRed px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                <button type="submit" @click="auth.login(form$.data)"
+                    class="flex w-full justify-center rounded-md bg-primaryRed px-3 py-1.5 mt-5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                     Login
                 </button>
             </div>
