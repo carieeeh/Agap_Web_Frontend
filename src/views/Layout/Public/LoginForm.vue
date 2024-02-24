@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted } from 'vue';
 import { ref } from 'vue';
-import { useAuthentication } from '@/stores/authetication'
+import { useAuthentication } from '@/stores/authentication'
 
 const form$ = ref(null);
 const auth = useAuthentication();
