@@ -8,7 +8,7 @@ import {
   ArrowLeftEndOnRectangleIcon,
 } from "@heroicons/vue/24/outline";
 import { RouterLink } from "vue-router";
-import { useAuthentication } from '@/stores/authetication'
+import { useAuthentication } from '@/stores/authentication'
 
 const navigation = [
   { name: "Dashboard", href: "/app/dashboard", icon: HomeIcon, current: true },
@@ -78,4 +78,4 @@ const auth = useAuthentication();
       </div>
     </div>
   </div>
-</template>
+</template>@/stores/authentication

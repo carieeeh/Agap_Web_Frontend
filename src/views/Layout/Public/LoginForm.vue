@@ -19,7 +19,8 @@ onMounted(() => {
     <div class="col-span-3 flex items-center justify-center h-screen w-full bg-primaryRed">
         <div class="bg-white rounded-md w-3/4 p-10">
             <p class="text-4xl font-bold">Welcome back!</p>
-            <p class="text-gray-500 py-5">Login into your accout.</p>
+            <p class="text-gray-500 py-5">Login into your account.</p>
+            <p v-if="auth.error == 'auth/invalid-credential'" class="pb-5 text-xs text-red-500">You have enter wrong email or password.</p>
             <div>
                 <Vueform ref="form$" :display-errors="false">
                     <TextElement name="email" rules="required|email" label="Email" type="email" size="sm" />

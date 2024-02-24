@@ -6,6 +6,7 @@ export const useAuthentication = defineStore('authentication', {
   state: () => ({
     authenticated: false,
     user: null,
+    error: null,
   }),
   actions: {
     login(data) {
@@ -17,12 +18,14 @@ export const useAuthentication = defineStore('authentication', {
            this.user = userCredential.user;
            console.log(auth);
            this.authenticated = true;
+           this.error = null;
            router.push('/app/dashboard');
         })
         .catch((error) => {
           const errorCode = error.code;
-          const errorMessage = error.message;
-          console.error(errorMessage, errorCode);
+          // const errorMessage = error.message;
+          this.error = errorCode;
+          console.error( errorCode);
         });
     },
     logout() {
