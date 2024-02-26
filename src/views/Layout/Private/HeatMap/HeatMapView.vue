@@ -26,7 +26,6 @@ watch(myMap, googleMap => {
         { location: new google.maps.LatLng({ lat: 14.5865, lng: 120.9843 }) },
         { location: new google.maps.LatLng({ lat: 14.5852, lng: 120.9841 }) },
       ];
-      console.log(heatData.value);
       console.log(map);
     })
   }

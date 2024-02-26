@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { getCurrentUser } from 'vuefire'
 import LoginView from '@/views/Layout/Public/LoginView.vue'
 import DashboardView  from '@/views/Layout/Private/Dashboard/DashboardView.vue'
 import InteractiveMap  from '@/views/Layout/Private/InteractiveMap/InteractiveMap.vue'
@@ -12,12 +13,18 @@ const router = createRouter({
     {
       path: '/',
       name: 'AGAP | Login',
-      component: LoginView
+      component: LoginView,
+      meta: {
+        middleware: 'guest',
+      }
     },
     {
       path: '/app',
       name: 'AGAP',
       component: PrivateView,
+      meta: {
+        middleware: "auth"
+      },
       children: [
         {
           path: '/app/dashboard',
@@ -42,6 +49,23 @@ const router = createRouter({
       ],
     },
   ]
+})
+
+router.beforeEach(async (to, from, next) => {
+  const user = await getCurrentUser();
+
+   if(to.meta.middleware == "guest") {
+    if(user) {
+      next({ path: '/app/dashboard' })
+    }
+    next()
+   }
+   else if (to.meta.middleware == 'auth') {
+    if(!user) {
+      next({path: '/'})
+    }
+    next()
+   }
 })
 
 export default router

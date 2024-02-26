@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import router from '@/router';
 
 export const useAuthentication = defineStore('authentication', {
@@ -25,12 +25,19 @@ export const useAuthentication = defineStore('authentication', {
           const errorCode = error.code;
           // const errorMessage = error.message;
           this.error = errorCode;
-          console.error( errorCode);
+          console.error(errorCode);
         });
     },
     logout() {
-      this.authenticated = false;
-      router.push('/')
+      const auth = getAuth();
+
+      signOut(auth).then(() => {
+        this.authenticated = false;
+        router.push('/')
+      }).catch((error) => {
+        console.error(error);
+      });
+
     }
   },
   persist: {
