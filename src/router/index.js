@@ -1,7 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { getCurrentUser } from 'vuefire'
 import LoginView from '@/views/Layout/Public/LoginView.vue'
+
 import DashboardView  from '@/views/Layout/Private/Dashboard/DashboardView.vue'
+import LineChart from "@/views/Layout/Private/Dashboard/LineChart.vue";
+import DetailedTable from "@/views/Layout/Private/Dashboard/DetailedTable.vue";
+
 import InteractiveMap  from '@/views/Layout/Private/InteractiveMap/InteractiveMap.vue'
 import HeatMap  from '@/views/Layout/Private/HeatMap/HeatMapView.vue'
 import AccountsView  from '@/views/Layout/Private/ManageAccounts/AccountsView.vue'
@@ -29,7 +33,19 @@ const router = createRouter({
         {
           path: '/app/dashboard',
           name: 'AGAP | Dashboard',
-          component: DashboardView
+          component: DashboardView,
+          children: [
+            {
+              path: '/app/dashboard',
+              name: 'AGAP | Dashboard >> Line Chart',
+              component: LineChart
+            },
+            {
+              path: '/app/dashboard/detailed-table',
+              name: 'AGAP | Dashboard >> Detailed Table',
+              component: DetailedTable
+            }
+          ]
         },
         {
           path: '/app/accounts',

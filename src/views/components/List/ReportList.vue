@@ -1,16 +1,11 @@
 <script setup>
-import { onMounted } from 'vue';
-
+// eslint-disable-next-line no-unused-vars
 const props = defineProps({ stats: { type: Array } });
 const emits = defineEmits(['click']);
 
 const click = () => {
     emits('click');
 }
-
-onMounted(() => {
-    console.log(props.stats);
-})
 
 </script>
 
