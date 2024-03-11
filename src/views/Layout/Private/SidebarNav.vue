@@ -1,6 +1,6 @@
 <script setup>
 // import { ref } from 'vue'
-import { FireIcon, HomeIcon, MapIcon, UserGroupIcon, ArrowLeftEndOnRectangleIcon } from "@heroicons/vue/24/outline";
+import { CircleStackIcon, HomeIcon, MapIcon, UserGroupIcon, ArrowLeftEndOnRectangleIcon } from "@heroicons/vue/24/outline";
 import { RouterLink } from "vue-router";
 import { useAuthentication } from '@/stores/authentication'
 
@@ -18,7 +18,7 @@ const navigation = [
     icon: MapIcon,
     current: false,
   },
-  { name: "Heatmap", href: "/app/heatmap", icon: FireIcon, current: false },
+  { name: "Heatmap", href: "/app/heatmap", icon: CircleStackIcon, current: false },
 ];
 
 const auth = useAuthentication();
@@ -72,4 +72,4 @@ const auth = useAuthentication();
       </div>
     </div>
   </div>
-</template>@/stores/authentication
+</template>
