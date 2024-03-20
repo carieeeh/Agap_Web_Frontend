@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { useCollection } from "vuefire";
-import { collection } from "firebase/firestore";
+import { collection, limit, orderBy, query } from "firebase/firestore";
 import { useFireStoreDb } from "@/firebase";
 
 export const useEmergenciesCollection = defineStore("emergencies", {
@@ -36,9 +36,11 @@ export const useEmergenciesCollection = defineStore("emergencies", {
   },
   actions: {
     getEmergencies() {
-      this.emergencies = useCollection(
+      const collectionRef = useCollection(
         collection(useFireStoreDb, "/agap_collection/staging/emergencies")
       );
+      this.emergencies = collectionRef;
+      // query(collectionRef, orderBy("create_at"), limit(10))
     },
     getEmergenciesFeedbacks() {
       this.emergencies_feedback = useCollection(

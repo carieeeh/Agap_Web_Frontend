@@ -1,3 +1,17 @@
+<script setup>
+import { onMounted } from 'vue'
+import { RouterView } from 'vue-router';
+import { useEmergenciesCollection } from '@/stores/emergencies';
+import { useUsersCollection } from '@/stores/users';
+import Sidebar from '@/views/Layout/Private/SidebarNav.vue'
+
+onMounted(() => {
+    useEmergenciesCollection().getEmergencies();
+    useEmergenciesCollection().getEmergenciesFeedbacks();
+    useUsersCollection().getUsers();
+})
+</script>
+
 <template>
     <div>
         <Sidebar></Sidebar>
@@ -9,10 +23,3 @@
         </main>
     </div>
 </template>
-    
-<script setup>
-// import { ref } from 'vue'
-import { RouterView } from 'vue-router';
-import Sidebar  from '@/views/Layout/Private/SidebarNav.vue'
-
-</script>
