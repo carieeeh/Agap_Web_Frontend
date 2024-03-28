@@ -1,22 +1,24 @@
 <!-- eslint-disable no-unused-vars -->
 <script setup>
 import { ref, reactive, watch, onMounted } from 'vue'
+import { QueueListIcon } from '@heroicons/vue/24/outline';
 import { useEmergenciesCollection } from '@/stores/emergencies';
+import CustomButton from '@/views/components/Buttons/CustomButton.vue';
 
 const props = defineProps({ hasAll: { type: Boolean, default: true } });
-const emits = defineEmits(['click', 'all']);
+const emits = defineEmits(['select-type', 'select-all']);
 
 const emergencies = useEmergenciesCollection();
 const selected = ref(null);
 
-const selectAll = (event) => {
-    emits('all', event);
+const selectAll = () => {
+    emits('select-all');
     selected.value = null;
 }
 
 const select = (item) => {
     selected.value = item.name;
-    emits('click', item);
+    emits('select-type', item);
 }
 
 const stats = reactive([
@@ -37,25 +39,23 @@ onMounted(() => {
     stats.forEach(report => {
         report.stat = emergencies.emergencies.filter(emergency => emergency.type == report.key).length;
     })
+    selectAll();
 })
 
 </script>
 
-
 <template>
     <div class="mt-5">
+        <CustomButton class="bg-green-400 text-white" @click="selectAll()">
+            <QueueListIcon class="h-5 w-5 shrink-0" /> Show all reports
+        </CustomButton>
 
-        <Vueform v-if="hasAll">
-            <CheckboxElement name="checkbox" @change="selectAll($event)">
-                Show all reports
-            </CheckboxElement>
-        </Vueform>
-        <dl class="mt-1 grid grid-cols-1 gap-5 sm:grid-cols-5">
+        <dl class="mt-2 grid grid-cols-1 gap-5 sm:grid-cols-5">
             <div v-for="item in stats" :key="item.name" @click="select(item)" :class="[
             'overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6 border border-b-4 hover:cursor-pointer relative',
             item.color,
         ]">
-                <div v-if="selected == item.name" class="h-2 w-2 bg-red-500 rounded-full absolute right-1 top-1 z-20">
+                <div v-show="selected == item.name" class="h-2 w-2 bg-red-500 rounded-full absolute right-1 top-1">
                 </div>
                 <dt class="truncate text-sm font-medium text-gray-500">
                     {{ item.name }}

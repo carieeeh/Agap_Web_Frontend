@@ -1,48 +1,49 @@
-<!-- eslint-disable no-undef -->
 <script setup>
-import { onMounted } from 'vue';
-import { watch } from 'vue';
 import { ref } from 'vue';
+import { useEmergenciesCollection } from '@/stores/emergencies';
+import { useConvertGeoPoint } from '@/composables/utilities.js'
 import ReportList from "@/views/components/List/ReportList.vue";
+
+const emergencies = useEmergenciesCollection();
+const selectedEmergencies = ref([]);
 
 const center = { lat: 14.5871, lng: 120.9845 }
 const zoom = 15
-const heatData = ref([])
 const myMap = ref();
 
-watch(myMap, googleMap => {
-  if (googleMap) {
-    googleMap.$mapPromise.then(map => {
-      heatData.value = [
-        { location: new google.maps.LatLng({ lat: 14.5871, lng: 120.9849 }) },
-        { location: new google.maps.LatLng({ lat: 14.5871, lng: 120.9847 }) },
-        { location: new google.maps.LatLng({ lat: 14.5871, lng: 120.9845 }) },
-        { location: new google.maps.LatLng({ lat: 14.5871, lng: 120.9843 }) },
-        { location: new google.maps.LatLng({ lat: 14.5871, lng: 120.9841 }) },
-        
-        { location: new google.maps.LatLng({ lat: 14.5855, lng: 120.9849 }) },
-        { location: new google.maps.LatLng({ lat: 14.5849, lng: 120.9847 }) },
-        { location: new google.maps.LatLng({ lat: 14.5843, lng: 120.9845 }) },
-        { location: new google.maps.LatLng({ lat: 14.5865, lng: 120.9843 }) },
-        { location: new google.maps.LatLng({ lat: 14.5852, lng: 120.9841 }) },
-      ];
-      console.log(map);
-    })
-  }
-});
+const selectType = (event) => {
+  selectedEmergencies.value = [...emergencies.getEmergenciesByType(event.key)];
+  selectedEmergencies.value.forEach(emergency => {
+    emergency.showInfo = false;
+  });
+  selectedEmergencies.value.forEach(emergency => {
+    // eslint-disable-next-line no-undef
+    emergency.location = new google.maps.LatLng(
+      useConvertGeoPoint(emergency.geopoint)
+    )
+  });
+}
 
-onMounted(() => {
-
-})
-
+const selectAllType = () => {
+  selectedEmergencies.value = emergencies.emergencies;
+  selectedEmergencies.value.forEach(emergency => {
+    emergency.showInfo = false;
+  });
+  selectedEmergencies.value.forEach(emergency => {
+    // eslint-disable-next-line no-undef
+    emergency.location = new google.maps.LatLng(
+      useConvertGeoPoint(emergency.geopoint)
+    )
+  });
+}
 </script>
 
 <template>
   <div>
-    <ReportList />
+    <ReportList @select-type="selectType($event)" @select-all="selectAllType($event)" />
     <div class="flex pt-5">
       <GMapMap ref="myMap" :center="center" :zoom="zoom" map-type-id="terrain" style="width: 76vw; height: 500px">
-        <GMapHeatmap :data="heatData"></GMapHeatmap>
+        <GMapHeatmap :data="selectedEmergencies"></GMapHeatmap>
       </GMapMap>
     </div>
   </div>

@@ -12,3 +12,7 @@ export const useFormatDate = (date) => {
 
   return parsedDate.toLocaleDateString("en-US", options);
 };
+
+export const useConvertGeoPoint = (geopoint) => {
+  return { lat: geopoint.latitude, lng: geopoint.longitude }
+}

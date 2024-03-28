@@ -87,7 +87,7 @@ const selectEmergency = (emergency) => {
             </template>
             <template v-slot:customButtons>
                 <div class="px-8 py-4 flex justify-end gap-4">
-                    <CustomButton type="cancel" class="bg-gray-400 text-white" @click="sliderIsOpen = false"/>
+                    <CustomButton type="cancel" class="bg-gray-300 text-white" @click="sliderIsOpen = false"/>
                     <!-- TODO: Accept incident send to nearest rescuer available -->
                     <CustomButton type="accept" class="bg-green-400 text-white"/>
                 </div>
