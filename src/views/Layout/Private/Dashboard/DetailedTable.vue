@@ -5,7 +5,7 @@ import { useFormatDate } from '@/composables/utilities.js'
 import { useEmergenciesCollection } from '@/stores/emergencies';
 import 'vue3-carousel/dist/carousel.css'
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
-import SlideOver from '@/views/components/SildeOver/SlideOver.vue';
+import SlideOver from '@/views/components/SlideOver/SlideOver.vue';
 import CustomTable from "@/views/components/Tables/CustomTable.vue";
 import CustomButton from '@/views/components/Buttons/CustomButton.vue';
 
@@ -87,7 +87,8 @@ const selectEmergency = (emergency) => {
             </template>
             <template v-slot:customButtons>
                 <div class="px-8 py-4 flex justify-end gap-4">
-                    <CustomButton type="cancel" class="bg-gray-400 text-white"/>
+                    <CustomButton type="cancel" class="bg-gray-400 text-white" @click="sliderIsOpen = false"/>
+                    <!-- TODO: Accept incident send to nearest rescuer available -->
                     <CustomButton type="accept" class="bg-green-400 text-white"/>
                 </div>
             </template>
