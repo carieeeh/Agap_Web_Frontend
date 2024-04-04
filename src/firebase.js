@@ -3,7 +3,7 @@ import { getFirestore } from 'firebase/firestore'
 // ... other firebase imports
 
 export const firebaseApp = initializeApp({
-  apiKey: "AIzaSyBgXlnez0RJ1GffBAeWjPDKNqI2Ad1DXAA",
+  apiKey: "AIzaSyDqLokxh3yyUWma5i0obuZgEuhgbeTx-i8",
   authDomain: "agap-f4c32.firebaseapp.com",
   databaseURL: "https://agap-f4c32-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "agap-f4c32",

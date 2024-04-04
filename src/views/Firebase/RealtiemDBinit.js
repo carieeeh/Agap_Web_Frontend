@@ -3,7 +3,7 @@ import { getDatabase, dbRef } from "firebase/database";
 // ... other firebase imports
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBgXlnez0RJ1GffBAeWjPDKNqI2Ad1DXAA",
+  apiKey: "AIzaSyDhHbTksP6L2sw2qAk2ozLzi-utU47uh5A",
   authDomain: "agap-f4c32.firebaseapp.com",
   projectId: "agap-f4c32",
   storageBucket: "agap-f4c32.appspot.com",

@@ -1,12 +1,16 @@
 <script setup>
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 import { Line } from "vue-chartjs";
+import { useEmergenciesCollection } from '@/stores/emergencies';
+import { useGetAllMonths } from '@/composables/utilities.js'
 import ReportList from "@/views/components/List/ReportList.vue";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, } from "chart.js";
+
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+const emergencies = useEmergenciesCollection();
 
 const chartData = reactive({
-    labels: ["January", "February", "March"],
+    labels: useGetAllMonths(2024),
     datasets: [
         {
             data: [10, 15, 12],
@@ -48,12 +52,29 @@ const chartData = reactive({
 });
 
 const chartOptions = { responsive: true };
+const selectedEmergencies = ref([]);
+
+const selectType = (event) => {
+    selectedEmergencies.value = emergencies.getEmergenciesByType(event.key);
+    selectedEmergencies.value.forEach(emergency => {
+        emergency.showInfo = false;
+    });
+}
+
+const selectAllType = () => {
+    selectedEmergencies.value = emergencies.emergencies;
+    selectedEmergencies.value.forEach(emergency => {
+        emergency.showInfo = false;
+    });
+}
 
 </script>
 
 <template>
     <div>
-        <ReportList />
+        <ReportList @select-type="selectType($event)" @select-all="selectAllType($event)" />
+        {{ emergencies.totalEmergenciesByMonthType(3, 'police') }}
+        {{ emergencies.getEmergenciesByDate('03-11-2024', '03-11-2024 23:59:59').length }}
         <div class="flex justify-center items-center w-full px-5 mt-5">
             <Line :data="chartData" :options="chartOptions" aria-label="Accident Reports Chart" />
         </div>

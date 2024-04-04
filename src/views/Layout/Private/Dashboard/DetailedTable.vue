@@ -61,7 +61,7 @@ const selectEmergency = (emergency) => {
                     <div v-if="detail.key == 'geopoint'">
                         <div>{{ detail.label }} :</div>
                         <iframe class="my-3 rounded-lg" width="100%" height="300" frameborder="0" style="border: 0"
-                            :src="`https://www.google.com/maps/embed/v1/place?key=AIzaSyBgXlnez0RJ1GffBAeWjPDKNqI2Ad1DXAA&zoom=15&q=${emergencySelected[detail.key].latitude},${emergencySelected[detail.key].longitude}`"></iframe>
+                            :src="`https://www.google.com/maps/embed/v1/place?key=AIzaSyDhHbTksP6L2sw2qAk2ozLzi-utU47uh5A&zoom=15&q=${emergencySelected[detail.key].latitude},${emergencySelected[detail.key].longitude}`"></iframe>
                     </div>
                     <div v-else-if="detail.key == 'file_urls'">
                         <div class="mb-3">{{ detail.label }} :</div>

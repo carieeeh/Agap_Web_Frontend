@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { useCollection } from "vuefire";
-import { collection, limit, orderBy, query } from "firebase/firestore";
+import { collection } from "firebase/firestore";
 import { useFireStoreDb } from "@/firebase";
 
 export const useEmergenciesCollection = defineStore("emergencies", {
@@ -33,6 +33,28 @@ export const useEmergenciesCollection = defineStore("emergencies", {
       return (type) =>
         state.emergencies.filter((emergency) => emergency.type == type);
     },
+    getEmergenciesByDate: (state) => {
+      return (fromDate, toDate) => 
+        state.emergencies.filter((item) => {
+          const itemDate = new Date(item.created_at);
+          const from = new Date(fromDate);
+          const to = new Date(toDate);
+
+          return itemDate >= from && itemDate <= to;
+        });
+    },
+    totalEmergenciesByMonth: (state) => {
+      return (monthIndex) => state.emergencies.filter(item => {
+        const itemMonthIndex = new Date(item.created_at).getMonth() + 1;
+        return itemMonthIndex === monthIndex;
+      }).length;
+    },
+    totalEmergenciesByMonthType: (state) => {
+      return (monthIndex, type) => state.emergencies.filter(item => {
+        const itemMonthIndex = new Date(item.created_at).getMonth() + 1;
+        return itemMonthIndex === monthIndex && item.type === type;
+      }).length;
+    }
   },
   actions: {
     getEmergencies() {

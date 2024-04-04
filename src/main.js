@@ -28,7 +28,7 @@ app.use(VueFire, {
 });
 app.use(VueGoogleMaps, {
   load: {
-      key: 'AIzaSyBgXlnez0RJ1GffBAeWjPDKNqI2Ad1DXAA',
+      key: 'AIzaSyDhHbTksP6L2sw2qAk2ozLzi-utU47uh5A',
       libraries: "visualization"
   },
 })

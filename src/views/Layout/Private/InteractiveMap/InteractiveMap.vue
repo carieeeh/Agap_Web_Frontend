@@ -62,8 +62,8 @@ const showEmergencyInfo = (emergency, value) => {
           @click="showEmergencyInfo(emergency, true)" :clickable="true">
           <GMapInfoWindow :opened="emergency.showInfo" :closeclick="true"
             @closeclick="showEmergencyInfo(emergency, false)">
-            <div class="p-1">
-              <p class="capitalize font-bold">{{ emergency.type }}</p>
+            <div class="p-1 w-40">
+              <p class="capitalize"><span class="font-bold">{{ emergency.type }}</span> - {{ emergency.status }}</p>
               <p class="pb-2">{{ emergency.address }}</p>
               <button class="bg-primaryRed rounded-md text-white p-2" @click="showModal = true">
                 More information

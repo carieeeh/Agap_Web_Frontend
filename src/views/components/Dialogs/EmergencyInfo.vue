@@ -68,7 +68,7 @@ const details = [
                                             <div class="text-left">Location :</div>
                                             <iframe class="my-3 rounded-lg" width="100%" height="250" frameborder="0"
                                                 style="border: 0"
-                                                :src="`https://www.google.com/maps/embed/v1/place?key=AIzaSyBgXlnez0RJ1GffBAeWjPDKNqI2Ad1DXAA&zoom=15&q=${emergency['geopoint'].latitude},${emergency['geopoint'].longitude}`"></iframe>
+                                                :src="`https://www.google.com/maps/embed/v1/place?key=AIzaSyDhHbTksP6L2sw2qAk2ozLzi-utU47uh5A&zoom=15&q=${emergency['geopoint'].latitude},${emergency['geopoint'].longitude}`"></iframe>
                                         </div>
                                         <div>
                                             <div class="mb-3 text-left">Evidences :</div>
