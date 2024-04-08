@@ -57,13 +57,13 @@ onMounted(() => {
         ]">
                 <div v-show="selected == item.name" class="h-2 w-2 bg-red-500 rounded-full absolute right-1 top-1">
                 </div>
-                <dt class="truncate text-sm font-medium text-gray-500">
+                <div class="truncate text-sm font-medium text-gray-500">
                     {{ item.name }}
-                </dt>
-                <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 relative">
+                </div>
+                <div class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 relative">
                     {{ item.stat }}
                     <img class="h-14 absolute -top-6 -right-4" :src="item.image" alt="" />
-                </dd>
+                </div>
             </div>
         </dl>
     </div>

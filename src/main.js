@@ -8,8 +8,6 @@ import piniaPersist from "pinia-plugin-persist";
 import App from "./App.vue";
 import router from "./router";
 import { firebaseApp } from "@/firebase";
-import Vueform from "@vueform/vueform";
-import vueformConfig from "./../vueform.config";
 import VueGoogleMaps from "@fawmi/vue-google-maps";
 
 const pinia = createPinia();
@@ -32,5 +30,4 @@ app.use(VueGoogleMaps, {
       libraries: "visualization"
   },
 })
-app.use(Vueform, vueformConfig);
 app.mount("#app");

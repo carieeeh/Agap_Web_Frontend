@@ -14,7 +14,6 @@
     "@googlemaps/js-api-loader": "^1.16.6",
     "@headlessui/vue": "^1.7.17",
     "@heroicons/vue": "^2.1.1",
-    "@vueform/vueform": "^1.7.3",
     "axios": "^1.6.5",
     "chart.js": "^4.4.1",
     "firebase": "^10.10.0",

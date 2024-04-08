@@ -10,8 +10,7 @@
         <img class="h-20 absolute bottom-40 left-10" src="/assets/images/gif/first-aid-kit.gif" alt="" />
         <img class="h-20 absolute bottom-48 left-64" src="/assets/images/gif/security-guard.gif" alt="" />
         <img class="h-20 absolute bottom-56 left-96" src="/assets/images/gif/charity.gif" alt="" />
-        <img class="h-20 absolute bottom-32 right-10" src="/assets/images/gif/ambulance.gif" alt="" />
         <img class="h-20 absolute top-56 left-10" src="/assets/images/gif/earthquake_colored.gif" alt="" />
-        <img class="h-44" src="/assets/images/red_no_bg_logo.png" alt="" />
+        <img class="h-44 m-auto z-10" src="/assets/images/red_no_bg_logo.png" alt="" />
     </div>
 </template>
