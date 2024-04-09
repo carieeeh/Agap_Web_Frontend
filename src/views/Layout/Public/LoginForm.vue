@@ -25,8 +25,8 @@ const showPassword = (event) => {
                 email or password.</p>
             <div>
                 <div>
-                    <InputForm label="Email" v-model="form.email"/>
-                    <InputForm label="Password" :type="passwordInputType" v-model="form.password" />
+                    <InputForm label="Email" type="email" :rules="['required']" v-model="form.email"/>
+                    <InputForm label="Password" :type="passwordInputType" :rules="['required']" v-model="form.password" />
                     <CheckboxInput label="Show password" @update:modelValue="showPassword($event)"/>
                 </div>
                 <div class="text-sm leading-6">

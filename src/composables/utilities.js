@@ -1,5 +1,6 @@
 export const useFormatDate = (date) => {
-  const milliseconds = date.seconds * 1000 + Math.round(date.nanoseconds / 1000000);
+  const milliseconds =
+    date.seconds * 1000 + Math.round(date.nanoseconds / 1000000);
   const options = {
     month: "2-digit",
     day: "2-digit",
@@ -69,3 +70,24 @@ export const useFilterByDate = (from, to, list, dateProperty) => {
     return itemDate >= fromDate && itemDate <= toDate;
   });
 };
+
+export function useRandomPassword() {
+  const length = 6;
+  let password = "";
+  const numbers = "0123456789";
+  const characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+  password += numbers.charAt(Math.floor(Math.random() * numbers.length));
+
+  for (let i = 1; i < length; i++) {
+    const char = characters.charAt(
+      Math.floor(Math.random() * characters.length)
+    );
+    password += char;
+  }
+
+  return password
+    .split("")
+    .sort(() => Math.random() - 0.5)
+    .join("");
+}

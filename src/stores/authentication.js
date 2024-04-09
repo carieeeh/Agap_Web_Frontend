@@ -1,25 +1,41 @@
-import { defineStore } from 'pinia'
-import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import router from '@/router';
+import { defineStore } from "pinia";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  signOut,
+  createUserWithEmailAndPassword,
+} from "firebase/auth";
+import router from "@/router";
+import { useRandomPassword } from "@/composables/utilities";
+import { useUsersCollection } from "@/stores/users";
 
-export const useAuthentication = defineStore('authentication', {
+export const useAuthentication = defineStore("authentication", {
   state: () => ({
     authenticated: false,
     user: null,
     error: null,
   }),
   actions: {
+    async createUser(email) {
+      const auth = getAuth();
+
+      let password = useRandomPassword();
+      try{
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        return {user: userCredential.user, password: password};
+      } catch (error) {
+        console.error(`Error: ${error.message}`, error.code);
+      }
+    },
     login(data) {
-      console.log(data.email, data.password)
       const auth = getAuth();
       signInWithEmailAndPassword(auth, data.email, data.password)
         .then((userCredential) => {
-          console.log(userCredential);
-           this.user = userCredential.user;
-           console.log(auth);
-           this.authenticated = true;
-           this.error = null;
-           router.push('/app/dashboard');
+          useUsersCollection();
+          this.user = userCredential.user;
+          this.authenticated = true;
+          this.error = null;
+          router.push("/app/dashboard");
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -31,16 +47,17 @@ export const useAuthentication = defineStore('authentication', {
     logout() {
       const auth = getAuth();
 
-      signOut(auth).then(() => {
-        this.authenticated = false;
-        router.push('/')
-      }).catch((error) => {
-        console.error(error);
-      });
-
-    }
+      signOut(auth)
+        .then(() => {
+          this.authenticated = false;
+          router.push("/");
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
   },
   persist: {
     enabled: true,
-  }
-})
+  },
+});
