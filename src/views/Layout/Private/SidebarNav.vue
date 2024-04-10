@@ -1,6 +1,6 @@
 <script setup>
 // import { ref } from 'vue'
-import { CircleStackIcon, HomeIcon, MapIcon, UserGroupIcon, ArrowLeftEndOnRectangleIcon } from "@heroicons/vue/24/outline";
+import { CircleStackIcon, HomeIcon, MapIcon, UserGroupIcon, ArrowLeftEndOnRectangleIcon, LockClosedIcon } from "@heroicons/vue/24/outline";
 import { TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { RouterLink } from "vue-router";
 import { useAuthentication } from '@/stores/authentication'
@@ -39,7 +39,8 @@ const auth = useAuthentication();
               enter-from="-translate-x-full" enter-to="translate-x-0"
               leave="transform transition ease-in-out duration-500 sm:duration-700" leave-from="translate-x-0"
               leave-to="-translate-x-full">
-              <div class="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-primaryRed px-6 pt-5 z-50">
+              <div
+                class="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-primaryRed px-6 pt-5 z-50">
                 <div class="flex h-24 shrink-0 items-center relative">
                   <img class="h-24" src="/assets/images/white_no_bg_logo.png" alt="" />
                   <button :class="['absolute -top-3 -right-3 text-white lg:hidden']" @click="$emit('close')">
@@ -72,6 +73,16 @@ const auth = useAuthentication();
                       </ul>
                     </li>
                     <li class="-mx-3 mt-auto mb-2">
+                      <button @click="auth.resetPassword(auth.user.email)" :class="[
+                        'text-white hover:text-primaryRed hover:bg-gray-50',
+                        'group w-full flex gap-x-3 rounded-md p-2 text-sm leading-6 mb-2 font-semibold',
+                      ]">
+                        <LockClosedIcon :class="[
+                          'text-white group-hover:text-primaryRed',
+                          'h-6 w-6 shrink-0',
+                        ]" aria-hidden="true" />
+                        Reset password?
+                      </button>
                       <button @click="auth.logout()" :class="[
                         'text-white hover:text-primaryRed hover:bg-gray-50',
                         'group w-full flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold',

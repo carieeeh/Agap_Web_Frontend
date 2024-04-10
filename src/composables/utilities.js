@@ -1,3 +1,6 @@
+import { createToast } from "mosha-vue-toastify";
+import "mosha-vue-toastify/dist/style.css";
+
 export const useFormatDate = (date) => {
   const milliseconds =
     date.seconds * 1000 + Math.round(date.nanoseconds / 1000000);
@@ -91,3 +94,68 @@ export function useRandomPassword() {
     .sort(() => Math.random() - 0.5)
     .join("");
 }
+
+export const useErrorMessage = function (title, description, position) {
+  createToast(
+      { title: title, description: description },
+      {
+          toastBackgroundColor: '#AF1E1E',
+          type: "danger",
+          showIcon: true,
+          hideProgressBar: true,
+          position: position,
+          showCloseButton: false,
+          transition: "bounce",
+          timeout: 3000,
+
+      }
+  );
+};
+
+export const useSuccessMessage = function (title, description, position) {
+  createToast(
+      {title: title, description: description},
+      {
+          toastBackgroundColor: '#0FA958',
+          showIcon: true,
+          showCloseButton: false,
+          hideProgressBar: true,
+          position: position,
+          type: "success",
+          transition: "bounce",
+          timeout: 3000,
+      }
+  );
+};
+
+export const useWarningMessage = function (title, description, position) {
+  createToast(
+      {title: title, description: description},
+      {
+          // toastBackgroundColor: '#ffc43d',
+          showIcon: true,
+          showCloseButton: false,
+          hideProgressBar: true,
+          position: position,
+          type: "warning",
+          transition: "bounce",
+          timeout: 3000,
+      }
+  );
+};
+
+export const useNotificationMessage = function (title, description, position) {
+  createToast(
+      {title: title, description: description},
+      {
+          toastBackgroundColor: '#2465C7',
+          showIcon: true,
+          showCloseButton: false,
+          hideProgressBar: true,
+          position: position,
+          type: "success",
+          transition: "bounce",
+          timeout: 3000,
+      }
+  );
+};

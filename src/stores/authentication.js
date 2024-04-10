@@ -4,9 +4,12 @@ import {
   signInWithEmailAndPassword,
   signOut,
   createUserWithEmailAndPassword,
+  setPersistence,
+  browserSessionPersistence,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 import router from "@/router";
-import { useRandomPassword } from "@/composables/utilities";
+import { useErrorMessage, useRandomPassword, useSuccessMessage } from "@/composables/utilities";
 import { useUsersCollection } from "@/stores/users";
 
 export const useAuthentication = defineStore("authentication", {
@@ -17,22 +20,20 @@ export const useAuthentication = defineStore("authentication", {
   }),
   actions: {
     async createUser(email) {
-      const auth = getAuth();
-
       let password = useRandomPassword();
       try{
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const userCredential = await createUserWithEmailAndPassword(getAuth(), email, password);
         return {user: userCredential.user, password: password};
       } catch (error) {
         console.error(`Error: ${error.message}`, error.code);
       }
     },
     login(data) {
-      const auth = getAuth();
-      signInWithEmailAndPassword(auth, data.email, data.password)
+      setPersistence(getAuth(), browserSessionPersistence)
+      signInWithEmailAndPassword(getAuth(), data.email, data.password)
         .then((userCredential) => {
-          useUsersCollection();
           this.user = userCredential.user;
+          useUsersCollection().updateUserFCMToken(userCredential.user.uid);
           this.authenticated = true;
           this.error = null;
           router.push("/app/dashboard");
@@ -45,9 +46,7 @@ export const useAuthentication = defineStore("authentication", {
         });
     },
     logout() {
-      const auth = getAuth();
-
-      signOut(auth)
+      signOut(getAuth())
         .then(() => {
           this.authenticated = false;
           router.push("/");
@@ -56,6 +55,14 @@ export const useAuthentication = defineStore("authentication", {
           console.error(error);
         });
     },
+    async resetPassword(email) {
+      try {
+        await sendPasswordResetEmail(getAuth(), email)
+        useSuccessMessage("Success", "Check your email,\n to reset your password", "top-right");
+      } catch (error) {
+        useErrorMessage("Oops", `Failed sending email. code: ${error.code}`, "top-right");
+      }
+    }
   },
   persist: {
     enabled: true,

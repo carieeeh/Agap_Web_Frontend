@@ -6,6 +6,8 @@ import { createPinia } from "pinia";
 import piniaPersist from "pinia-plugin-persist";
 
 import App from "./App.vue";
+import moshaToast from "mosha-vue-toastify";
+import "mosha-vue-toastify/dist/style.css";
 import router from "./router";
 import { firebaseApp } from "@/firebase";
 import VueGoogleMaps from "@fawmi/vue-google-maps";
@@ -24,6 +26,7 @@ app.use(VueFire, {
     VueFireAuth(),
   ],
 });
+app.use(moshaToast);
 app.use(VueGoogleMaps, {
   load: {
       key: 'AIzaSyDhHbTksP6L2sw2qAk2ozLzi-utU47uh5A',

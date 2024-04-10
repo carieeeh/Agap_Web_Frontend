@@ -1,6 +1,7 @@
 import { getFunctions, httpsCallable } from "firebase/functions";
 import { useFirebaseApp } from "vuefire";
 import emailjs from "@emailjs/browser";
+import { useErrorMessage } from "./utilities";
 
 export function useSendEmail(subject, name, email, message) {
   emailjs
@@ -34,5 +35,6 @@ export async function useEmailSend() {
     console.log(result);
   } catch (error) {
     console.error(error);
+    useErrorMessage("Oops", "Failed sending email.", "top-right")
   }
 }

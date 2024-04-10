@@ -27,7 +27,10 @@ const showPassword = (event) => {
                 <div>
                     <InputForm label="Email" type="email" :rules="['required']" v-model="form.email"/>
                     <InputForm label="Password" :type="passwordInputType" :rules="['required']" v-model="form.password" />
-                    <CheckboxInput label="Show password" @update:modelValue="showPassword($event)"/>
+                    <div class="flex justify-between">
+                        <CheckboxInput label="Show password" @update:modelValue="showPassword($event)"/>
+                        <a href="#" class="text-sm hover:text-primaryRed underline" @click="auth.resetPassword(form.email)">Forgot password?</a>
+                    </div>
                 </div>
                 <div class="text-sm leading-6">
                     <!-- <a href="#" class="font-semibold text-indigo-600 hover:text-indigo-500">Forgot password?</a> -->

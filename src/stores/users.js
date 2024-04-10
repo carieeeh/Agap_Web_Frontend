@@ -5,6 +5,7 @@ import { collection, addDoc, doc, setDoc, updateDoc  } from "firebase/firestore"
 import { useFireStoreDb } from "@/firebase";
 import { useSendEmail } from "@/composables/emails";
 import { useFCMDeviceToken } from "@/composables/firebase_messaging";
+import { useErrorMessage, useSuccessMessage } from "@/composables/utilities";
 
 export const useUsersCollection = defineStore("users", {
   state: () => {
@@ -57,8 +58,10 @@ export const useUsersCollection = defineStore("users", {
           \nEmail : ${data.email.value} 
           Temporary Password : ${user.password}`
         );
+        useSuccessMessage("Success", "User created.", "top-right");
       } catch (error) {
         console.error(error);
+        useErrorMessage("Oops", "User create failed.", "top-right");
       } finally {
         this.isLoading = false;
       }
@@ -81,8 +84,10 @@ export const useUsersCollection = defineStore("users", {
           data.id.value
         );
         await setDoc(docRef, mapData);
+        useSuccessMessage("Success", "User details updated.", "top-right");
       } catch (error) {
         console.error(error);
+        useErrorMessage("Oops", "User details update failed.", "top-right");
       } finally {
         this.isLoading = false;
       }

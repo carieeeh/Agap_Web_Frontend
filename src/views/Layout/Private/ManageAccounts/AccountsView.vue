@@ -55,6 +55,11 @@ function selectStatus(event) {
   const item = event.item;
   form.status.value = item;
 }
+
+async function submit() {
+  isAdd.value ? await users.createAdmin(form) : await users.updateUserDetails(form)
+  sliderIsOpen.value = false ;
+}
 </script>
 
 <template>
@@ -129,11 +134,11 @@ function selectStatus(event) {
                 </div>
                 <div class="flex justify-end mt-5 gap-3">
                   <CustomButton type="custom" class="bg-green-400 text-white"
-                    @click="isAdd ? users.createAdmin(form) : users.updateUserDetails(form)">
+                    @click="submit()">
                     <ArrowUpOnSquareIcon class="h-5 w-5 shrink-0" />
                     <span>Submit</span>
                   </CustomButton>
-                  <CustomButton type="cancel" class="bg-gray-400 text-white" />
+                  <CustomButton type="cancel" @click="sliderIsOpen = true" class="bg-gray-400 text-white" />
                 </div>
               </template>
             </SlideOver>
