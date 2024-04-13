@@ -30,6 +30,8 @@ const form = reactive({
 function editUser(uid) {
   sliderIsOpen.value = true;
   selectedUser.value = users.getUserByUid(uid);
+  console.log(uid)
+  console.log(selectedUser.value)
   Object.keys(form).forEach(key => {
     form[key].value = selectedUser.value[key];
   })

@@ -7,10 +7,9 @@ import 'vue3-carousel/dist/carousel.css'
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
 
 defineProps({ isOpen: Boolean, emergency: Object, hasMap: { type: Boolean, default: true }, selectedEmergency: { type: Boolean, default: true } });
-const emits = defineEmits(['close', 'accept'])
+const emits = defineEmits(['close', 'accept', 'decline'])
 
 const accept = (emergency) => {
-    console.log(emergency);
     emits('accept', emergency);
 }
 
@@ -68,10 +67,10 @@ const details = [
                                         <div class="grid grid-cols-2">
                                             <div>
                                                 <div class="mb-3 text-left">Evidences :</div>
-                                                <div class="w-96 mx-auto pr-5">
+                                                <div class="w-80 mx-auto">
                                                     <carousel :items-to-show="1.5">
                                                         <slide v-for="image in emergency['file_urls']" :key="image">
-                                                            <img class="rounded-lg" :src="image" />
+                                                            <img class="rounded-lg border border-white" :src="image" />
                                                         </slide>
 
                                                         <template #addons>
@@ -84,7 +83,7 @@ const details = [
 
                                             <div v-if="hasMap">
                                                 <div class="text-left">Location :</div>
-                                                <iframe class="my-3 rounded-lg" width="100%" height="350"
+                                                <iframe class="my-3 rounded-lg" width="100%" height="300"
                                                     frameborder="0" style="border: 0"
                                                     :src="`https://www.google.com/maps/embed/v1/place?key=AIzaSyDhHbTksP6L2sw2qAk2ozLzi-utU47uh5A&zoom=15&q=${emergency['geopoint'].latitude},${emergency['geopoint'].longitude}`"></iframe>
                                             </div>

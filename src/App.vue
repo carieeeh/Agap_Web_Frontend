@@ -16,6 +16,7 @@ watch(() => emergencies.emergencies, (newValue) => {
 </script>
 
 <template>
-  <EmergencyInfo v-if="selectedEmergency" :isOpen="showModal" @close="showModal = false" :emergency="selectedEmergency" :dismissible="false" />
+  <EmergencyInfo v-if="selectedEmergency" :isOpen="showModal" @close="showModal = false" :emergency="selectedEmergency"
+    :dismissible="false" @accept="emergencies.acceptEmergency($event)" />
   <RouterView />
 </template>

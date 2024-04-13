@@ -33,20 +33,14 @@ export function useHandleMessaging(callback) {
   });
 }
 
-export async function useSendPushNotification() {
+export async function useSendPushNotification(token, data) {
   const functions = getFunctions(useFirebaseApp());
 
   const sendNotification = httpsCallable(functions, "sendNotification");
   try {
     const result = await sendNotification({
-      token: "dAs3sPqF8azWBCuwV7eGlL:APA91bHIbDGB07sKMVzp7tg9YSBboqO5wfh_AgJk8lOggx1L5uJUyh3x2pr2pBVhHvnan-tjbYDK3W2IoSsCdlYsAhQmOlCpgNJos1a1QhU2f3_dAbScEgkzpxzqXysoA7TXGbyekWBE",
-      data: {
-        title: "test",
-        body: "Test body",
-        test: "data",
-        success: "true",
-        number: "123456789",
-      }
+      token: token,
+      data: data,
     });
     console.log(result);
   } catch (error) {

@@ -6,9 +6,9 @@ import { useUsersCollection } from '@/stores/users';
 import Sidebar from '@/views/Layout/Private/SidebarNav.vue'
 
 onMounted(() => {
+    useUsersCollection().getUsers();
     useEmergenciesCollection().getEmergencies();
     useEmergenciesCollection().getEmergenciesFeedbacks();
-    useUsersCollection().getUsers();
 })
 </script>
 

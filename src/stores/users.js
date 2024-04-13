@@ -22,7 +22,7 @@ export const useUsersCollection = defineStore("users", {
       const user = state.users.find((user) => user.uid == uid);
       return user ? `${user.first_name} ${user.last_name}` : "Unknown";
     },
-    getUserFCMToken: (state) => (uid) => state.users.find(user => user.uid === uid)["fcm_token"],
+    getUserFCMToken: (state) => (uid) => state.users.find((user) => user.uid == uid)["fcm_token"] ?? "no token",
   },
   actions: {
     getUsers() {

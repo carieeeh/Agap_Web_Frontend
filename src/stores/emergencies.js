@@ -1,7 +1,9 @@
 import { defineStore } from "pinia";
 import { useCollection } from "vuefire";
-import { collection, limit, onSnapshot, orderBy, query } from "firebase/firestore";
+import { collection, limit, orderBy, query } from "firebase/firestore";
 import { useFireStoreDb } from "@/firebase";
+import { useSendPushNotification } from "@/composables/firebase_messaging";
+import { useUsersCollection } from "./users";
 
 export const useEmergenciesCollection = defineStore("emergencies", {
   state: () => {
@@ -80,18 +82,18 @@ export const useEmergenciesCollection = defineStore("emergencies", {
         )
       );
     },
-    onEmergencyCreated() {
-      const colRef = collection(useFireStoreDb, "/agap_collection/staging/emergencies");
-      onSnapshot(colRef, (snapshot) => {
-        const addedDocs = snapshot.docChanges().filter((change) => change.type === "added");
-      
-        // Process the newly added documents
-        addedDocs.forEach((doc) => {
-          const newDocData = doc.doc.data();
-          console.log("Added document:", newDocData);
-          // Perform actions with the newly added data (e.g., update UI, store in state)
-        });
-      });
+    acceptEmergency(emergency) {
+      if(emergency) {
+        console.log(emergency.resident_uid);
+        const token = useUsersCollection().getUserByUid(emergency.resident_uid);
+        console.log(token);
+        const data = {
+          title: "Emergency report approved.",
+          message: "Wait for a rescuer to accept your emergency...",
+          status: "approved",
+        }
+        useSendPushNotification(token, data); 
+      }
     }
   },
 });
