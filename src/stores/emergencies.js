@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { useCollection } from "vuefire";
-import { collection } from "firebase/firestore";
+import { collection, limit, onSnapshot, orderBy, query } from "firebase/firestore";
 import { useFireStoreDb } from "@/firebase";
 
 export const useEmergenciesCollection = defineStore("emergencies", {
@@ -8,6 +8,7 @@ export const useEmergenciesCollection = defineStore("emergencies", {
     return {
       emergencies: [],
       emergencies_feedback: [],
+      totalEmergency: 0,
     };
   },
   getters: {
@@ -58,11 +59,17 @@ export const useEmergenciesCollection = defineStore("emergencies", {
   },
   actions: {
     getEmergencies() {
-      const collectionRef = useCollection(
-        collection(useFireStoreDb, "/agap_collection/staging/emergencies")
-      );
-      this.emergencies = collectionRef;
-      // query(collectionRef, orderBy("create_at"), limit(10))
+      const db = useFireStoreDb; // Replace if using a different variable for the Firestore instance
+
+      const colRef = collection(db, "/agap_collection/staging/emergencies");
+      const allQuery = query(colRef);
+      const paginatedQuery = query(colRef, orderBy("created_at", "desc"), limit(10)); // Order by create_at descending
+      const allEmergencies = useCollection(allQuery);
+
+      this.totalEmergency = allEmergencies.length;
+
+      const emergenciesRef = useCollection(paginatedQuery); // Use the query in useCollection
+      this.emergencies = emergenciesRef;
     },
     getEmergenciesFeedbacks() {
       this.emergencies_feedback = useCollection(
@@ -72,5 +79,18 @@ export const useEmergenciesCollection = defineStore("emergencies", {
         )
       );
     },
+    onEmergencyCreated() {
+      const colRef = collection(useFireStoreDb, "/agap_collection/staging/emergencies");
+      onSnapshot(colRef, (snapshot) => {
+        const addedDocs = snapshot.docChanges().filter((change) => change.type === "added");
+      
+        // Process the newly added documents
+        addedDocs.forEach((doc) => {
+          const newDocData = doc.doc.data();
+          console.log("Added document:", newDocData);
+          // Perform actions with the newly added data (e.g., update UI, store in state)
+        });
+      });
+    }
   },
 });

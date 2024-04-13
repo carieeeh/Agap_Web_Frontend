@@ -29,7 +29,7 @@ const auth = useAuthentication();
 
 
 <template>
-  <div class="relative">
+  <div class="relative w-60">
     <TransitionRoot :show="isOpen">
       <div class="fixed inset-0 overflow-hidden">
         <div class="absolute inset-0 overflow-hidden">

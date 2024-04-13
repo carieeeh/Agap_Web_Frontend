@@ -16,8 +16,6 @@ onMounted(() => {
 
 <template>
     <div class="relative">
-        <Sidebar class="hidden lg:block " :isOpen="true" />
-        <Sidebar class="lg:hidden z-50" :isOpen="openHamburger" @close="openHamburger = false" />
         <main class="lg:pl-72">
             <div class="flex mt-5 pr-3 items-center justify-between">
                 <p class="ml-3 lg:ml-8 text-primaryRed text-xl font-semibold">{{ $route.name }}</p>
@@ -33,5 +31,7 @@ onMounted(() => {
                 <RouterView :key="$route.fullPath"></RouterView>
             </div>
         </main>
+        <Sidebar class="hidden lg:block w-64" :isOpen="true" />
+        <Sidebar class="lg:hidden w-64" :isOpen="openHamburger" @close="openHamburger = false" />
     </div>
 </template>

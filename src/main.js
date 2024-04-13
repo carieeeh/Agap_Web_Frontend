@@ -4,6 +4,7 @@ import { VueFire, VueFireAuth } from "vuefire";
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 import piniaPersist from "pinia-plugin-persist";
+import { getMessaging, onMessage,  } from "firebase/messaging";
 
 import App from "./App.vue";
 import moshaToast from "mosha-vue-toastify";
@@ -15,6 +16,11 @@ import VueGoogleMaps from "@fawmi/vue-google-maps";
 const pinia = createPinia();
 pinia.use(piniaPersist);
 const app = createApp(App);
+
+onMessage(getMessaging(firebaseApp), (payload) => {
+  console.log("Message received. ", payload);
+});
+
 
 app.use(pinia);
 app.use(router);

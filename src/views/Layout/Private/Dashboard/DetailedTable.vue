@@ -46,7 +46,7 @@ const selectEmergency = (emergency) => {
 <template>
     <div>
         <CustomTable label="Incident Reports" :tableHeader="tableHeader" :items="emergencies.emergencies"
-            @row-click="selectEmergency($event)">
+            @row-click="selectEmergency($event)" class="z-50">
             <template v-slot:resident_uid="slotProps">
                 {{ users.getUserFullName(slotProps.data.resident_uid) }}
             </template>
