@@ -7,6 +7,7 @@ export const useEmergenciesCollection = defineStore("emergencies", {
   state: () => {
     return {
       emergencies: [],
+      paginatedEmergencies: [],
       emergencies_feedback: [],
       totalEmergency: 0,
     };

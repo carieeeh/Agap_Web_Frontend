@@ -1,7 +1,7 @@
 <script setup>
-// eslint-disable-next-line no-unused-vars
-const props = defineProps({ tableHeader: Array, items: Array, users: Array, label: String })
-const emits = defineEmits(['row-click']);
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/vue/24/outline";
+defineProps({ tableHeader: Array, items: Array, users: Array, label: String })
+const emits = defineEmits(['row-click', 'next', 'prev']);
 
 const rowClick = (event) => {
     emits('row-click', event)
@@ -12,8 +12,16 @@ const rowClick = (event) => {
     <div>
         <div class="mt-5">
             <div class="sm:flex sm:items-center">
-                <div class="sm:flex-auto">
+                <div class="flex sm:flex-auto justify-between">
                     <h1 class="text-base font-semibold leading-6 text-gray-900">{{ label }}</h1>
+                    <div class="flex gap-5">
+                        <button class="rounded-md bg-primaryRed text-white p-1" @click="$emit('prev')">
+                            <ChevronLeftIcon class="h-5 w-5 shrink-0" />
+                        </button>
+                        <button class="rounded-md bg-primaryRed text-white p-1" @click="$emit('next')">
+                            <ChevronRightIcon class="h-5 w-5 shrink-0" />
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="mt-3 flow-root">

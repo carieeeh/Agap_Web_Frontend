@@ -73,8 +73,8 @@ const selectAllType = () => {
 <template>
     <div>
         <ReportList @select-type="selectType($event)" @select-all="selectAllType($event)" />
-        {{ emergencies.totalEmergenciesByMonthType(3, 'police') }}
-        {{ emergencies.getEmergenciesByDate('03-11-2024', '03-11-2024 23:59:59').length }}
+        <!-- {{ emergencies.totalEmergenciesByMonthType(3, 'police') }}
+        {{ emergencies.getEmergenciesByDate('03-11-2024', '03-11-2024 23:59:59').length }} -->
         <div class="flex justify-center items-center w-full px-5 mt-5">
             <Line :data="chartData" :options="chartOptions" aria-label="Accident Reports Chart" />
         </div>
