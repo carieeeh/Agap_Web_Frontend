@@ -18,9 +18,8 @@ pinia.use(piniaPersist);
 const app = createApp(App);
 
 onMessage(getMessaging(firebaseApp), (payload) => {
-  console.log("Message received. ", payload);
+  console.error("Message received. ", payload);
 });
-
 
 app.use(pinia);
 app.use(router);

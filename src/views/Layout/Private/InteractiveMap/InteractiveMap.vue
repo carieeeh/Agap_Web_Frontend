@@ -45,7 +45,6 @@ const selectAllType = () => {
 const showEmergencyInfo = (emergency, value) => {
   emergency.showInfo = value;
   selectedEmergency.value = emergency;
-  console.log(emergency);
 }
 
 

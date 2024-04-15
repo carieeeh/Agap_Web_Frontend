@@ -97,65 +97,91 @@ export function useRandomPassword() {
 
 export const useErrorMessage = function (title, description, position) {
   createToast(
-      { title: title, description: description },
-      {
-          toastBackgroundColor: '#AF1E1E',
-          type: "danger",
-          showIcon: true,
-          hideProgressBar: true,
-          position: position,
-          showCloseButton: false,
-          transition: "bounce",
-          timeout: 3000,
-
-      }
+    { title: title, description: description },
+    {
+      toastBackgroundColor: "#AF1E1E",
+      type: "danger",
+      showIcon: true,
+      hideProgressBar: true,
+      position: position,
+      showCloseButton: false,
+      transition: "bounce",
+      timeout: 3000,
+    }
   );
 };
 
 export const useSuccessMessage = function (title, description, position) {
   createToast(
-      {title: title, description: description},
-      {
-          toastBackgroundColor: '#0FA958',
-          showIcon: true,
-          showCloseButton: false,
-          hideProgressBar: true,
-          position: position,
-          type: "success",
-          transition: "bounce",
-          timeout: 3000,
-      }
+    { title: title, description: description },
+    {
+      toastBackgroundColor: "#0FA958",
+      showIcon: true,
+      showCloseButton: false,
+      hideProgressBar: true,
+      position: position,
+      type: "success",
+      transition: "bounce",
+      timeout: 3000,
+    }
   );
 };
 
 export const useWarningMessage = function (title, description, position) {
   createToast(
-      {title: title, description: description},
-      {
-          // toastBackgroundColor: '#ffc43d',
-          showIcon: true,
-          showCloseButton: false,
-          hideProgressBar: true,
-          position: position,
-          type: "warning",
-          transition: "bounce",
-          timeout: 3000,
-      }
+    { title: title, description: description },
+    {
+      // toastBackgroundColor: '#ffc43d',
+      showIcon: true,
+      showCloseButton: false,
+      hideProgressBar: true,
+      position: position,
+      type: "warning",
+      transition: "bounce",
+      timeout: 3000,
+    }
   );
 };
 
 export const useNotificationMessage = function (title, description, position) {
   createToast(
-      {title: title, description: description},
-      {
-          toastBackgroundColor: '#2465C7',
-          showIcon: true,
-          showCloseButton: false,
-          hideProgressBar: true,
-          position: position,
-          type: "success",
-          transition: "bounce",
-          timeout: 3000,
-      }
+    { title: title, description: description },
+    {
+      toastBackgroundColor: "#2465C7",
+      showIcon: true,
+      showCloseButton: false,
+      hideProgressBar: true,
+      position: position,
+      type: "success",
+      transition: "bounce",
+      timeout: 3000,
+    }
   );
 };
+
+const deg2rad = (deg) => {
+  return deg * (Math.PI / 180);
+};
+
+export const useDistanceCalculator = (lat1, lon1, lat2, lon2) => {
+  const R = 6371; // Radius of the Earth in kilometers
+  const dLat = deg2rad(lat2 - lat1);
+  const dLon = deg2rad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(deg2rad(lat1)) *
+      Math.cos(deg2rad(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const distance = R * c; // Distance in kilometers
+  return distance;
+};
+
+export const useSortByDistance = (array, refLat, refLng) => {
+  return array.sort((a, b) => {
+    const distanceA = useDistanceCalculator(refLat, refLng, a.geopoint.latitude, a.geopoint.longitude);
+    const distanceB = useDistanceCalculator(refLat, refLng, b.geopoint.latitude, b.geopoint.longitude);
+    return distanceA - distanceB;
+  });
+}

@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { useCollection } from "vuefire";
 import { useAuthentication } from "@/stores/authentication";
-import { collection, addDoc, doc, setDoc, updateDoc  } from "firebase/firestore";
+import { collection, addDoc, doc, setDoc, updateDoc } from "firebase/firestore";
 import { useFireStoreDb } from "@/firebase";
 import { useSendEmail } from "@/composables/emails";
 import { useFCMDeviceToken } from "@/composables/firebase_messaging";
@@ -22,7 +22,10 @@ export const useUsersCollection = defineStore("users", {
       const user = state.users.find((user) => user.uid == uid);
       return user ? `${user.first_name} ${user.last_name}` : "Unknown";
     },
-    getUserFCMToken: (state) => (uid) => state.users.find((user) => user.uid == uid)["fcm_token"] ?? "no token",
+    filterUsersByRole: (state) => (role) =>
+      state.users.filter((user) => user.role == role),
+    getUserFCMToken: (state) => (uid) =>
+      state.users.find((user) => user.uid == uid)["fcm_token"] ?? "no token",
   },
   actions: {
     getUsers() {
@@ -94,20 +97,21 @@ export const useUsersCollection = defineStore("users", {
       }
     },
     async updateUserFCMToken(uid) {
-      try {
-        const userDoc = this.getUserByUid(uid);
-        console.log(userDoc);
-        const fcmToken = await useFCMDeviceToken();
-        const docRef = doc(
-          useFireStoreDb,
-          "/agap_collection/staging/users",
-          userDoc.id,
-        );
-        await updateDoc(docRef, { fcm_token: fcmToken });
-      } catch (error) {
-        console.error(error);
-      } finally {
-        this.isLoading = false;
+      if (this.users.length > 0) {
+        try {
+          const userDoc = this.getUserByUid(uid);
+          const fcmToken = await useFCMDeviceToken();
+          const docRef = doc(
+            useFireStoreDb,
+            "/agap_collection/staging/users",
+            userDoc.id
+          );
+          await updateDoc(docRef, { fcm_token: fcmToken });
+        } catch (error) {
+          console.error(error);
+        } finally {
+          this.isLoading = false;
+        }
       }
     },
   },

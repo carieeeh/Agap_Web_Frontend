@@ -10,7 +10,6 @@ import {
 } from "firebase/auth";
 import router from "@/router";
 import { useErrorMessage, useRandomPassword, useSuccessMessage } from "@/composables/utilities";
-import { useUsersCollection } from "@/stores/users";
 
 export const useAuthentication = defineStore("authentication", {
   state: () => ({
@@ -33,7 +32,6 @@ export const useAuthentication = defineStore("authentication", {
       signInWithEmailAndPassword(getAuth(), data.email, data.password)
         .then((userCredential) => {
           this.user = userCredential.user;
-          useUsersCollection().updateUserFCMToken(userCredential.user.uid);
           this.authenticated = true;
           this.error = null;
           router.push("/app/dashboard");

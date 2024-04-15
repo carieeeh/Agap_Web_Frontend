@@ -4,6 +4,7 @@ import { collection, limit, orderBy, query } from "firebase/firestore";
 import { useFireStoreDb } from "@/firebase";
 import { useSendPushNotification } from "@/composables/firebase_messaging";
 import { useUsersCollection } from "./users";
+import { useSortByDistance } from "@/composables/utilities";
 
 export const useEmergenciesCollection = defineStore("emergencies", {
   state: () => {
@@ -12,6 +13,7 @@ export const useEmergenciesCollection = defineStore("emergencies", {
       paginatedEmergencies: [],
       emergencies_feedback: [],
       totalEmergency: 0,
+      rescuer_locations: [],
     };
   },
   getters: {
@@ -38,7 +40,7 @@ export const useEmergenciesCollection = defineStore("emergencies", {
         state.emergencies.filter((emergency) => emergency.type == type);
     },
     getEmergenciesByDate: (state) => {
-      return (fromDate, toDate) => 
+      return (fromDate, toDate) =>
         state.emergencies.filter((item) => {
           const itemDate = new Date(item.created_at);
           const from = new Date(fromDate);
@@ -48,17 +50,19 @@ export const useEmergenciesCollection = defineStore("emergencies", {
         });
     },
     totalEmergenciesByMonth: (state) => {
-      return (monthIndex) => state.emergencies.filter(item => {
-        const itemMonthIndex = new Date(item.created_at).getMonth() + 1;
-        return itemMonthIndex === monthIndex;
-      }).length;
+      return (monthIndex) =>
+        state.emergencies.filter((item) => {
+          const itemMonthIndex = new Date(item.created_at).getMonth() + 1;
+          return itemMonthIndex === monthIndex;
+        }).length;
     },
     totalEmergenciesByMonthType: (state) => {
-      return (monthIndex, type) => state.emergencies.filter(item => {
-        const itemMonthIndex = new Date(item.created_at).getMonth() + 1;
-        return itemMonthIndex === monthIndex && item.type === type;
-      }).length;
-    }
+      return (monthIndex, type) =>
+        state.emergencies.filter((item) => {
+          const itemMonthIndex = new Date(item.created_at).getMonth() + 1;
+          return itemMonthIndex === monthIndex && item.type === type;
+        }).length;
+    },
   },
   actions: {
     getEmergencies() {
@@ -66,7 +70,11 @@ export const useEmergenciesCollection = defineStore("emergencies", {
 
       const colRef = collection(db, "/agap_collection/staging/emergencies");
       const allQuery = query(colRef);
-      const paginatedQuery = query(colRef, orderBy("created_at", "desc"), limit(10)); // Order by create_at descending
+      const paginatedQuery = query(
+        colRef,
+        orderBy("created_at", "desc"),
+        limit(10)
+      ); // Order by create_at descending
       const allEmergencies = useCollection(allQuery);
 
       this.totalEmergency = allEmergencies.length;
@@ -82,18 +90,53 @@ export const useEmergenciesCollection = defineStore("emergencies", {
         )
       );
     },
-    acceptEmergency(emergency) {
-      if(emergency) {
-        console.log(emergency.resident_uid);
-        const token = useUsersCollection().getUserByUid(emergency.resident_uid);
-        console.log(token);
+    getRescuerLocations() {
+      this.rescuer_locations = useCollection(
+        collection(
+          useFireStoreDb,
+          "/agap_collection/staging/rescuer_locations"
+        )
+      );
+    },
+    findNearestRescuer(emergency) {
+      if (this.rescuer_locations.length > 0) {
+
+        const rescuers = useSortByDistance(
+          this.rescuer_locations,
+          emergency.geopoint.latitude,
+          emergency.geopoint.longitude,
+        );
+        
+        return rescuers;
+      }
+    },
+    async acceptEmergency(emergency) {
+      if (emergency) {
+        const token = useUsersCollection().getUserFCMToken(
+          emergency.resident_uid
+        );
         const data = {
           title: "Emergency report approved.",
           message: "Wait for a rescuer to accept your emergency...",
           status: "approved",
+          purpose: "approved",
+        };
+        const sortedRescuers =  this.findNearestRescuer(emergency);
+        console.log(sortedRescuers);
+        await useSendPushNotification(token, data);
+        const rescuerToken = useUsersCollection().getUserFCMToken(
+          sortedRescuers[0].uid,
+        );
+
+        emergency.docId = emergency.id;
+        const rescuerData = {
+          purpose: "rescuer",
+          title: "EMERGENCY!.",
+          message: "A resident needs your help.",
+          emergency: JSON.stringify(emergency),
         }
-        useSendPushNotification(token, data); 
+        await useSendPushNotification(rescuerToken, rescuerData);
       }
-    }
+    },
   },
 });
