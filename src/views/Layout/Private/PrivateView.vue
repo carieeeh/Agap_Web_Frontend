@@ -13,6 +13,11 @@ const emergencies = useEmergenciesCollection();
 const selectedEmergency = ref(null);
 const showModal = ref(false);
 
+function accept(event) {
+    showModal.value = false;
+    emergencies.acceptEmergency(event);
+}
+
 watch(() => emergencies.emergencies, (newValue) => {
     const index = newValue.findIndex(item => item.status === "pending");
     selectedEmergency.value = newValue[index];
@@ -35,7 +40,7 @@ onMounted(() => {
 <template>
     <div class="relative">
         <EmergencyInfo v-if="selectedEmergency" :isOpen="showModal" @close="showModal = false"
-            :emergency="selectedEmergency" :dismissible="false" @accept="emergencies.acceptEmergency($event)" />
+            :emergency="selectedEmergency" :dismissible="false" @accept="accept($event)" />
         <Sidebar />
         <main class="lg:pl-72">
             <div class="flex mt-5 pr-3 items-center justify-between">

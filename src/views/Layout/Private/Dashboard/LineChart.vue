@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref } from "vue";
+import { inject, onMounted, reactive, ref, watch } from "vue";
 import { Line } from "vue-chartjs";
 import { useEmergenciesCollection } from '@/stores/emergencies';
 import { useGetAllMonths } from '@/composables/utilities.js'
@@ -7,10 +7,11 @@ import ReportList from "@/views/components/List/ReportList.vue";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, } from "chart.js";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
-const emergencies = useEmergenciesCollection();
 
+const dateFilter = inject("dateFilter");
+const emergencies = useEmergenciesCollection();
 const chartData = reactive({
-    labels: useGetAllMonths(2024),
+    labels: [],
     datasets: [
         {
             data: [10, 15, 12],
@@ -51,8 +52,9 @@ const chartData = reactive({
     ],
 });
 
-const chartOptions = { responsive: true };
+const chartOptions = { responsive: true, };
 const selectedEmergencies = ref([]);
+const chartKey = ref(0);
 
 const selectType = (event) => {
     selectedEmergencies.value = emergencies.getEmergenciesByType(event.key);
@@ -68,6 +70,17 @@ const selectAllType = () => {
     });
 }
 
+watch(dateFilter, () => {
+    console.log(dateFilter);
+    chartData.labels = useGetAllMonths(dateFilter.fromDate, dateFilter.toDate);
+    chartKey.value++;
+}, { deep: true });
+
+onMounted(() => {
+    chartData.labels = useGetAllMonths(dateFilter.fromDate, dateFilter.toDate);
+    chartKey.value++;
+});
+
 </script>
 
 <template>
@@ -75,7 +88,7 @@ const selectAllType = () => {
         <ReportList @select-type="selectType($event)" @select-all="selectAllType($event)" />
         <!-- {{ emergencies.totalEmergenciesByMonthType(3, 'police') }}
         {{ emergencies.getEmergenciesByDate('03-11-2024', '03-11-2024 23:59:59').length }} -->
-        <div class="flex justify-center items-center w-full px-5 mt-5">
+        <div class="flex justify-center items-center w-full px-5 mt-5" :key="chartKey">
             <Line :data="chartData" :options="chartOptions" aria-label="Accident Reports Chart" />
         </div>
     </div>

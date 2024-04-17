@@ -45,6 +45,6 @@ export async function useSendPushNotification(token, data) {
     console.log(result);
   } catch (error) {
     console.error(error);
-    useErrorMessage("Oops", "Failed sending email.", "top-right")
+    useErrorMessage("Oops", "Failed sending notification.", "top-right")
   }
 }

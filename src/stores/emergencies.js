@@ -1,10 +1,14 @@
 import { defineStore } from "pinia";
 import { useCollection } from "vuefire";
-import { collection, limit, orderBy, query } from "firebase/firestore";
+import { collection, doc, limit, orderBy, query, updateDoc } from "firebase/firestore";
 import { useFireStoreDb } from "@/firebase";
 import { useSendPushNotification } from "@/composables/firebase_messaging";
 import { useUsersCollection } from "./users";
-import { useSortByDistance } from "@/composables/utilities";
+import {
+  useErrorMessage,
+  useSortByDistance,
+  useSuccessMessage,
+} from "@/composables/utilities";
 
 export const useEmergenciesCollection = defineStore("emergencies", {
   state: () => {
@@ -92,50 +96,66 @@ export const useEmergenciesCollection = defineStore("emergencies", {
     },
     getRescuerLocations() {
       this.rescuer_locations = useCollection(
-        collection(
-          useFireStoreDb,
-          "/agap_collection/staging/rescuer_locations"
-        )
+        collection(useFireStoreDb, "/agap_collection/staging/rescuer_locations")
       );
     },
     findNearestRescuer(emergency) {
       if (this.rescuer_locations.length > 0) {
-
         const rescuers = useSortByDistance(
           this.rescuer_locations,
           emergency.geopoint.latitude,
-          emergency.geopoint.longitude,
+          emergency.geopoint.longitude
         );
-        
+
         return rescuers;
       }
     },
     async acceptEmergency(emergency) {
       if (emergency) {
-        const token = useUsersCollection().getUserFCMToken(
-          emergency.resident_uid
-        );
-        const data = {
-          title: "Emergency report approved.",
-          message: "Wait for a rescuer to accept your emergency...",
-          status: "approved",
-          purpose: "approved",
-        };
-        const sortedRescuers =  this.findNearestRescuer(emergency);
-        console.log(sortedRescuers);
-        await useSendPushNotification(token, data);
-        const rescuerToken = useUsersCollection().getUserFCMToken(
-          sortedRescuers[0].uid,
-        );
+        try {
+          const token = useUsersCollection().getUserFCMToken(
+            emergency.resident_uid
+          );
+          const data = {
+            title: "Emergency report approved.",
+            message: "Wait for a rescuer to accept your emergency...",
+            status: "approved",
+            purpose: "approved",
+          };
+          const sortedRescuers = this.findNearestRescuer(emergency);
+          console.log(sortedRescuers);
+          await useSendPushNotification(token, data);
+          const rescuerToken = useUsersCollection().getUserFCMToken(
+            sortedRescuers[0].uid
+          );
 
-        emergency.docId = emergency.id;
-        const rescuerData = {
-          purpose: "rescuer",
-          title: "EMERGENCY!.",
-          message: "A resident needs your help.",
-          emergency: JSON.stringify(emergency),
+          emergency.docId = emergency.id;
+          const rescuerData = {
+            purpose: "rescuer",
+            title: "EMERGENCY!.",
+            message: "A resident needs your help.",
+            emergency: JSON.stringify(emergency),
+          };
+          const docRef = doc(
+            useFireStoreDb,
+            "/agap_collection/staging/emergencies",
+            emergency.docId
+          );
+          await updateDoc(docRef, { status: "approved" });
+
+          await useSendPushNotification(rescuerToken, rescuerData);
+          useSuccessMessage(
+            "Success",
+            "Looking for free rescuer to respond...",
+            "top-right"
+          );
+        } catch (error) {
+          useErrorMessage(
+            "Oops",
+            `Failed accepting emergency. code: ${error.code}`,
+            "top-right"
+          );
         }
-        await useSendPushNotification(rescuerToken, rescuerData);
       }
     },
   },

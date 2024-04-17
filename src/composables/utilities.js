@@ -22,13 +22,21 @@ export const useConvertGeoPoint = (geopoint) => {
 };
 
 export const useGetAllMonths = (from, to) => {
-  const fromDate = new Date(from);
-  const toDate = new Date(`${to} 23:59:59`);
+  let fromDate, toDate;
+
+  if (!from || !to) {
+    const currentYear = new Date().getFullYear();
+    fromDate = new Date(currentYear, 0, 1);
+    toDate = new Date();
+  } else {
+    fromDate = new Date(from);
+    toDate = new Date(`${to} 23:59:59`);
+  }
 
   const fromMonth = fromDate.getMonth();
   const toMonth = toDate.getMonth();
 
-  const fromYear = fromDate.getFullYear();
+  let fromYear = fromDate.getFullYear();
   const toYear = toDate.getFullYear();
 
   const currentDate = new Date();
@@ -49,18 +57,24 @@ export const useGetAllMonths = (from, to) => {
     "December",
   ];
 
-  const fromIndex = months.indexOf(fromMonth);
-  const toIndex = months.indexOf(toMonth);
+  const fromIndex = fromMonth;
+  const toIndex = toMonth;
 
   const previousMonthsArray = [];
   let year = currentYear;
-  for (let i = fromIndex; i <= toIndex; i++) {
-    if (fromYear != toYear) {
-      year = i < 12 ? fromYear : toYear;
+  console.log(fromYear, toYear);
+  console.log(fromYear <= toYear);
+  console.log(`${months[toMonth]} ${toYear}`);
+  for (let i = fromIndex; i != (toIndex + 1); i++) {
+    year = fromYear > toYear ? fromYear : toYear;
+    if(i == 12) {
+      i  = 0;
+      fromYear++
     }
     previousMonthsArray.push(`${months[i]} ${year}`);
   }
 
+  console.log(previousMonthsArray);
   return previousMonthsArray;
 };
 
@@ -180,8 +194,18 @@ export const useDistanceCalculator = (lat1, lon1, lat2, lon2) => {
 
 export const useSortByDistance = (array, refLat, refLng) => {
   return array.sort((a, b) => {
-    const distanceA = useDistanceCalculator(refLat, refLng, a.geopoint.latitude, a.geopoint.longitude);
-    const distanceB = useDistanceCalculator(refLat, refLng, b.geopoint.latitude, b.geopoint.longitude);
+    const distanceA = useDistanceCalculator(
+      refLat,
+      refLng,
+      a.geopoint.latitude,
+      a.geopoint.longitude
+    );
+    const distanceB = useDistanceCalculator(
+      refLat,
+      refLng,
+      b.geopoint.latitude,
+      b.geopoint.longitude
+    );
     return distanceA - distanceB;
   });
-}
+};
