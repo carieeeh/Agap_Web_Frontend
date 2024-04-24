@@ -1,7 +1,7 @@
 <script setup>
 import { reactive, ref } from 'vue';
 import { useEmergenciesCollection } from '@/stores/emergencies';
-import { useConvertGeoPoint } from '@/composables/utilities.js'
+import { useConvertGeoPoint, useMapOptions } from '@/composables/utilities.js'
 import ReportList from "@/views/components/List/ReportList.vue";
 import EmergencyInfo from "@/views/components/Dialogs/EmergencyInfo.vue";
 
@@ -17,15 +17,6 @@ const markerIcons = {
   earthquake: "/assets/images/static/google_pin_earthquake.png",
   flood: "/assets/images/static/google_pin_flood.png",
   police: "/assets/images/static/google_pin_police1.png",
-}
-
-const options = {
-  zoomControl: true,
-  mapTypeControl: true,
-  scaleControl: true,
-  streetViewControl: true,
-  rotateControl: true,
-  fullscreenControl: true,
 }
 
 const selectType = (event) => {
@@ -47,14 +38,13 @@ const showEmergencyInfo = (emergency, value) => {
   selectedEmergency.value = emergency;
 }
 
-
 </script>
 
 <template>
   <div>
     <ReportList @select-type="selectType($event)" @select-all="selectAllType($event)" />
     <div class="flex pt-5">
-      <GMapMap ref="myMap" :options="options" :center="center" :zoom="15" map-type-id="roadmap"
+      <GMapMap ref="myMap" :options="useMapOptions" :center="center" :zoom="15" map-type-id="roadmap"
         style="width: 76vw; height: 500px">
         <GMapMarker :key="index" v-for="(emergency, index) in selectedEmergencies"
           :position="useConvertGeoPoint(emergency.geopoint)" :icon="markerIcons[emergency.type]"

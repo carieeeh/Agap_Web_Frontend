@@ -65,11 +65,11 @@ export const useGetAllMonths = (from, to) => {
   console.log(fromYear, toYear);
   console.log(fromYear <= toYear);
   console.log(`${months[toMonth]} ${toYear}`);
-  for (let i = fromIndex; i != (toIndex + 1); i++) {
+  for (let i = fromIndex; i != toIndex + 1; i++) {
     year = fromYear > toYear ? fromYear : toYear;
-    if(i == 12) {
-      i  = 0;
-      fromYear++
+    if (i == 12) {
+      i = 0;
+      fromYear++;
     }
     previousMonthsArray.push(`${months[i]} ${year}`);
   }
@@ -208,4 +208,67 @@ export const useSortByDistance = (array, refLat, refLng) => {
     );
     return distanceA - distanceB;
   });
+};
+
+export const useMapOptions = {
+  zoomControl: true,
+  mapTypeControl: true,
+  scaleControl: true,
+  streetViewControl: true,
+  rotateControl: true,
+  fullscreenControl: true,
+  styles: [
+    {
+      featureType: "administrative",
+      elementType: "geometry",
+      stylers: [
+        {
+          visibility: "off",
+        },
+      ],
+    },
+    {
+      featureType: "administrative.land_parcel",
+      elementType: "labels",
+      stylers: [
+        {
+          visibility: "off",
+        },
+      ],
+    },
+    {
+      featureType: "poi",
+      stylers: [
+        {
+          visibility: "off",
+        },
+      ],
+    },
+    {
+      featureType: "road",
+      elementType: "labels.icon",
+      stylers: [
+        {
+          visibility: "off",
+        },
+      ],
+    },
+    {
+      featureType: "road.local",
+      elementType: "labels",
+      stylers: [
+        {
+          visibility: "off",
+        },
+      ],
+    },
+    {
+      featureType: "transit",
+      stylers: [
+        {
+          visibility: "off",
+        },
+      ],
+    },
+  ],
 };

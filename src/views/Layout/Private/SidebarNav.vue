@@ -6,7 +6,7 @@ import {
   TransitionChild,
   TransitionRoot,
 } from '@headlessui/vue'
-import { CircleStackIcon, HomeIcon, MapIcon, UserGroupIcon, ArrowLeftEndOnRectangleIcon, Bars3Icon } from "@heroicons/vue/24/outline";
+import { CircleStackIcon, HomeIcon, MapIcon, UserGroupIcon, ArrowLeftEndOnRectangleIcon, Bars3Icon, BuildingOffice2Icon } from "@heroicons/vue/24/outline";
 import { RouterLink } from "vue-router";
 import { useAuthentication } from '@/stores/authentication'
 
@@ -16,6 +16,12 @@ const navigation = [
     name: "Accounts",
     href: "/app/accounts",
     icon: UserGroupIcon,
+    current: false,
+  },
+  {
+    name: "Stations",
+    href: "/app/stations",
+    icon: BuildingOffice2Icon,
     current: false,
   },
   {

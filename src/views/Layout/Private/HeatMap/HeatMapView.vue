@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useEmergenciesCollection } from '@/stores/emergencies';
-import { useConvertGeoPoint } from '@/composables/utilities.js'
+import { useConvertGeoPoint, useMapOptions } from '@/composables/utilities.js'
 import ReportList from "@/views/components/List/ReportList.vue";
 
 const emergencies = useEmergenciesCollection();
@@ -42,7 +42,8 @@ const selectAllType = () => {
   <div>
     <ReportList @select-type="selectType($event)" @select-all="selectAllType($event)" />
     <div class="flex pt-5">
-      <GMapMap ref="myMap" :center="center" :zoom="zoom" map-type-id="terrain" style="width: 76vw; height: 500px">
+      <GMapMap ref="myMap" :options="useMapOptions" :center="center" :zoom="zoom" map-type-id="terrain"
+        style="width: 76vw; height: 500px">
         <GMapHeatmap :data="selectedEmergencies"></GMapHeatmap>
       </GMapMap>
     </div>
