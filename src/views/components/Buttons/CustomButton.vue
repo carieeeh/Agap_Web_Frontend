@@ -22,7 +22,8 @@ const getIconType = () => {
         'edit': PencilSquareIcon,
         'import': ArrowDownTrayIcon,
         'clear': TrashIcon,
-        'upload': DocumentPlusIcon,
+        'upload': CheckCircleIcon,
+        'submit': DocumentPlusIcon,
     };
 
     return iconComponentMap[props.type] || Bars3CenterLeftIcon;
@@ -36,6 +37,7 @@ const getLabelType = () => {
         'import' : "Import",
         'clear' : "Clear",
         'upload' : "Upload",
+        'submit' : "Submit",
     };
 
     return genericLabelMap[props.type] || props.label;

@@ -12,7 +12,7 @@ const users = useUsersCollection();
 const selectedUser = ref(null);
 const isAdd = ref(false);
 
-const statusList = ["pending", "accepted", "deactivated"];
+const statusList = ["pending", "accepted", "deactivated", "blocked"];
 const form = reactive({
   id: { value: '' },
   uid: { value: '' },

@@ -13,7 +13,12 @@ const rowClick = (event) => {
         <div class="mt-5">
             <div class="sm:flex sm:items-center">
                 <div class="flex sm:flex-auto justify-between">
-                    <h1 class="text-base font-semibold leading-6 text-gray-900">{{ label }}</h1>
+                    <div class="flex">
+                        <h1 class="text-base font-semibold leading-6 text-gray-900">{{ label }}</h1>
+                        <slot name="buttons">
+
+                        </slot> 
+                    </div>
                     <div class="flex gap-5">
                         <button class="rounded-md bg-primaryRed text-white p-1" @click="$emit('prev')">
                             <ChevronLeftIcon class="h-5 w-5 shrink-0" />

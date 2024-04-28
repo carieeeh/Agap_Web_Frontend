@@ -1,19 +1,24 @@
 <script setup>
 
-defineProps({
+const props = defineProps({
     label: String,
     modelValue: {
         type: String, Number,
     }
 });
 
-defineEmits(['update:modelValue']);
+const emits = defineEmits(['update:modelValue', "checked"]);
+
+function select(event) {
+    emits("checked", props.label);
+    emits('update:modelValue', event.target.checked)
+}
 </script>
 
 <template>
     <div>
-        <input type="checkbox" @change="$emit('update:modelValue', $event.target.checked)">
-        <span class="text-sm px-2">
+        <input type="checkbox" @change="select($event)">
+        <span class="text-sm px-2 capitalize">
             {{ label }}
         </span>
     </div>
