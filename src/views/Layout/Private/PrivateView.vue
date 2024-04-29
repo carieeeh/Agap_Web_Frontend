@@ -7,6 +7,7 @@ import { useHandleMessaging } from '@/composables/firebase_messaging';
 import { useEmergenciesCollection } from '@/stores/emergencies';
 import EmergencyInfo from "@/views/components/Dialogs/EmergencyInfo.vue";
 import Sidebar from '@/views/Layout/Private/SidebarNav.vue'
+import { useStationCollection } from '@/stores/station';
 
 
 const emergencies = useEmergenciesCollection();
@@ -34,6 +35,7 @@ onMounted(() => {
     useEmergenciesCollection().getEmergencies();
     useEmergenciesCollection().getEmergenciesFeedbacks();
     useHandleMessaging();
+    useStationCollection().getStations();
 })
 </script>
 

@@ -1,11 +1,11 @@
 import { defineStore } from "pinia";
 import { useCollection } from "vuefire";
-import { useAuthentication } from "@/stores/authentication";
-import { collection, addDoc, doc, setDoc, updateDoc } from "firebase/firestore";
 import { useFireStoreDb } from "@/firebase";
 import { useSendEmail } from "@/composables/emails";
+import { useAuthentication } from "@/stores/authentication";
 import { useFCMDeviceToken } from "@/composables/firebase_messaging";
 import { useErrorMessage, useSuccessMessage } from "@/composables/utilities";
+import { collection, addDoc, doc, setDoc, updateDoc } from "firebase/firestore";
 
 export const useUsersCollection = defineStore("users", {
   state: () => {
@@ -65,7 +65,7 @@ export const useUsersCollection = defineStore("users", {
         useSuccessMessage("Success", "User created.", "top-right");
       } catch (error) {
         console.error(error);
-        useErrorMessage("Oops", "User create failed.", "top-right");
+        useErrorMessage("Oops", "User creation failed.", "top-right");
       } finally {
         this.isLoading = false;
       }

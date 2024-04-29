@@ -1,5 +1,6 @@
 <script setup>
-import { ref, reactive } from 'vue';
+import { ref } from 'vue';
+import { useStationCollection } from '@/stores/station';
 import InputForm from '@/views/components/Inputs/InputForm.vue';
 import RadioInput from '@/views/components/Inputs/RadioInput.vue';
 import SlideOver from '@/views/components/SlideOver/SlideOver.vue';
@@ -17,7 +18,7 @@ const tableHeader = [
     { label: "Categories", key: "types" },
     { label: "Status", key: "status" },
 ];
-
+const station = useStationCollection();
 const categories = ["medical", "fire", "police", "earthquake", "flood"];
 const statusList = ["Active", "Inactive"];
 const tableItems = [
@@ -47,37 +48,37 @@ const tableItems = [
     },
 ]
 
-const form = reactive({
-    name: "",
-    address: "",
-    total_rescuers: "",
-    total_units: "",
-    latitude: "",
-    longitude: "",
-    categories: [],
-    contact: "",
-    status: "Active"
-});
-
 function selectStation(event) {
     console.log(event);
     isSliderOpen.value = true;
 }
 
 function addStation() {
+    station.form = {
+        id: "",
+        name: "",
+        address: "",
+        total_rescuers: "",
+        total_units: "",
+        latitude: "",
+        longitude: "",
+        categories: [],
+        contact: "",
+        status: "Active",
+    };
     isSliderOpen.value = true;
 }
 
 function addCategories(category) {
-    if (!form.categories.includes(category)) {
-        form.categories.push(category);
+    if (!station.form.categories.includes(category)) {
+        station.form.categories.push(category);
     } else {
-        const index = form.categories.indexOf(category);
+        const index = station.form.categories.indexOf(category);
         if (index !== -1) {
-            form.categories.splice(index, 1);
+            station.form.categories.splice(index, 1);
         }
     }
-    console.log(form.categories);
+    console.log(station.form.categories);
 }
 
 function close() {
@@ -85,8 +86,9 @@ function close() {
 }
 
 function submit() {
-    console.log(form);
+    station.createStation()
 }
+
 </script>
 
 <template>
@@ -104,23 +106,24 @@ function submit() {
         </CustomTable>
         <SlideOver :isOpen="isSliderOpen" @close="isSliderOpen = false" title="Station Name">
             <template v-slot:content>
-                <InputForm type="text" label="Station name" v-model="form.name" />
-                <InputForm type="number" label="Total rescuers in station" v-model="form.total_rescuers" />
-                <InputForm type="number" label="Total units in station" v-model="form.total_units" />
+                <InputForm type="text" label="Station name" v-model="station.form.name" />
+                <InputForm type="number" label="Total rescuers in station" v-model="station.form.total_rescuers" />
+                <InputForm type="number" label="Total units in station" v-model="station.form.total_units" />
                 <p>Location</p>
-                <InputForm type="text" label="Station address" v-model="form.address" />
-                <InputForm type="text" label="Station latitude" v-model="form.latitude" />
-                <InputForm type="text" label="Station longitude" v-model="form.longitude" />
+                <InputForm type="text" label="Station address" v-model="station.form.address" />
+                <InputForm type="text" label="Station latitude" v-model="station.form.latitude" />
+                <InputForm type="text" label="Station longitude" v-model="station.form.longitude" />
                 <p class="text-sm">Station categories : </p>
                 <div class="grid grid-cols-2 mt-1.5">
                     <CheckboxInput v-for="(category, index) in categories" :key="index" :label="category"
                         @checked="addCategories($event)" />
                 </div>
-                <InputForm type="text" label="Station contact (email or phone number)" v-model="form.contact" />
-                <RadioInput label="Station status" :items="statusList" v-model="form.status" />
+                <InputForm type="text" label="Station contact (email or phone number)" v-model="station.form.contact" />
+                <RadioInput label="Station status" :items="statusList" v-model="station.form.status" />
                 <div class="flex w-full justify-end gap-4 mt-5">
                     <CustomButton type="cancel" @click="close()" class="bg-gray-300 text-white" />
-                    <CustomButton type="submit" class="bg-green-400 text-white" @click="submit()" />
+                    <CustomButton type="submit" class="bg-green-400 text-white" :isLoading="station.isLoading"
+                        @click="submit()" />
                 </div>
             </template>
         </SlideOver>

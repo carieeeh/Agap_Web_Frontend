@@ -7,7 +7,7 @@ import { Listbox, ListboxButton, ListboxLabel, ListboxOption, ListboxOptions, } 
 const props = defineProps({
     list: { type: Array, default: [""] },
     label: { type: String, default: "Label" },
-    default: { type: Number, default: 0 },
+    default: { type: [Number, String], default: 0 },
     property: String,
 });
 

@@ -1,14 +1,16 @@
 <script setup>
-import { useFormatDate } from '@/composables/utilities.js'
-import { XCircleIcon } from '@heroicons/vue/24/outline';
-import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
-import CustomButton from '@/views/components/Buttons/CustomButton.vue';
 import 'vue3-carousel/dist/carousel.css'
+import { useStationCollection } from '@/stores/station';
+import { XCircleIcon } from '@heroicons/vue/24/outline';
+import { useFormatDate } from '@/composables/utilities.js';
+import CustomButton from '@/views/components/Buttons/CustomButton.vue';
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
+import DropdownList from '@/views/components/Dropdown/DropdownList.vue';
+import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 
 defineProps({ isOpen: Boolean, emergency: Object, hasMap: { type: Boolean, default: true }, selectedEmergency: { type: Boolean, default: true } });
 const emits = defineEmits(['close', 'accept', 'decline'])
-
+const station = useStationCollection();
 const accept = (emergency) => {
     emits('accept', emergency);
 }
@@ -50,7 +52,7 @@ const details = [
                                         {{ emergency?.type }}
                                     </DialogTitle>
                                     <div class="mt-2">
-                                        <div class="grid grid-cols-2">
+                                        <div class="grid grid-cols-2 gap-x-4">
                                             <div v-for="detail in details" :key="detail.key">
                                                 <div class="grid grid-cols-12 my-1.5 gap-1">
                                                     <p class="col-span-4 text-left">{{ detail.label }} :</p>
@@ -63,8 +65,12 @@ const details = [
                                                     </p>
                                                 </div>
                                             </div>
+                                            <div class="grid justify-start">
+                                                <p class="">Stations (assign a station to respond) :</p>
+                                                <DropdownList label="" :default="0" property="name" :list="station.stations" />
+                                            </div>
                                         </div>
-                                        <div class="grid grid-cols-2">
+                                        <div class="grid grid-cols-2 gap-x-4">
                                             <div>
                                                 <div class="mb-3 text-left">Evidences :</div>
                                                 <div class="w-80 mx-auto">
