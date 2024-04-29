@@ -58,6 +58,7 @@ function addStation() {
         id: "",
         name: "",
         address: "",
+        station_code: "",
         total_rescuers: "",
         total_units: "",
         latitude: "",
@@ -107,6 +108,7 @@ function submit() {
         <SlideOver :isOpen="isSliderOpen" @close="isSliderOpen = false" title="Station Name">
             <template v-slot:content>
                 <InputForm type="text" label="Station name" v-model="station.form.name" />
+                <InputForm type="text" label="Station code" v-model="station.form.code" />
                 <InputForm type="number" label="Total rescuers in station" v-model="station.form.total_rescuers" />
                 <InputForm type="number" label="Total units in station" v-model="station.form.total_units" />
                 <p>Location</p>

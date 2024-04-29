@@ -13,6 +13,7 @@ export const useStationCollection = defineStore("station", {
         id: "",
         name: "",
         address: "",
+        station_code: "",
         total_rescuers: "",
         total_units: "",
         latitude: "",
@@ -28,6 +29,21 @@ export const useStationCollection = defineStore("station", {
       state.stations.filter((station) => station.category == category),
   },
   actions: {
+    resetForm() {
+      this.form = {
+        id: "",
+        name: "",
+        address: "",
+        station_code: "",
+        total_rescuers: "",
+        total_units: "",
+        latitude: "",
+        longitude: "",
+        categories: [],
+        contact: "",
+        status: "Active",
+      };
+    },
     getStations() {
       this.stations = useCollection(
         collection(useFireStoreDb, "/agap_collection/staging/stations")
@@ -75,6 +91,7 @@ export const useStationCollection = defineStore("station", {
           id: "",
           name: "",
           address: "",
+          station_code: "",
           total_rescuers: "",
           total_units: "",
           latitude: "",
