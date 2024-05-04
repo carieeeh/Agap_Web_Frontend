@@ -53,15 +53,16 @@ export const useEmergenciesCollection = defineStore("emergencies", {
       return (type) =>
         state.emergencies.filter((emergency) => emergency.type == type);
     },
-    getEmergenciesByDate: (state) => {
-      return (fromDate, toDate) =>
-        state.emergencies.filter((item) => {
-          const itemDate = new Date(item.created_at);
-          const from = new Date(fromDate);
-          const to = new Date(toDate);
-
-          return itemDate >= from && itemDate <= to;
-        });
+    getEmergenciesByDate: (state) => (fromDate, toDate) => {
+      const from = new Date(fromDate);
+      const to = new Date(toDate);
+      return state.emergencies.filter((item) => {
+        const itemDate = new Date(item.created_at);
+        // Set time to 00:00:00 for comparison
+        from.setHours(0, 0, 0, 0);
+        to.setHours(23, 59, 59, 999); // Set time to end of day
+        return itemDate >= from && itemDate <= to;
+      });
     },
     totalEmergenciesByMonth: (state) => {
       return (monthIndex) =>

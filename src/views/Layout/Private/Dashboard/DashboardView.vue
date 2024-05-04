@@ -10,6 +10,13 @@ const dateFilter = reactive({ toDate: null, fromDate: null })
 const linkPath = computed(() => route.path == '/app/dashboard/detailed-table' ? '/app/dashboard' : '/app/dashboard/detailed-table')
 const linkLabel = computed(() => route.path == '/app/dashboard/detailed-table' ? 'Show line chart report >>' : 'Show detailed report on table >>')
 
+function filter() {
+  console.log(dateFilter);
+  if (dateFilter.fromDate && dateFilter.toDate) {
+    console.log(useEmergenciesCollection().getEmergenciesByDate(dateFilter.toDate, dateFilter.fromDate));
+  }
+}
+
 provide('dateFilter', dateFilter);
 </script>
 
@@ -22,7 +29,7 @@ provide('dateFilter', dateFilter);
       <div class="grid grid-cols-1 items-end gap-4 lg:grid-cols-12">
         <DateInput class="lg:col-span-4" label="From date:" v-model="dateFilter.fromDate" />
         <DateInput class="lg:col-span-4" label="To date:" v-model="dateFilter.toDate" />
-        <button
+        <button @click="filter"
           class="lg:col-span-2 md:truncate bg-red-300 rounded-md h-8 w-32 flex items-center justify-center gap-3 hover:bg-red-400 lg:w-full">
           Filter
         </button>
