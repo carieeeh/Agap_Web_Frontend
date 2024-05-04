@@ -13,10 +13,10 @@ const showModal = ref(false);
 
 const markerIcons = {
   fire: "/assets/images/static/google_pin_fire.png",
-  medical: "/assets/images/static/google_pin_health1.png",
+  medical: "/assets/images/static/google_pin_health.png",
   earthquake: "/assets/images/static/google_pin_earthquake.png",
   flood: "/assets/images/static/google_pin_flood.png",
-  police: "/assets/images/static/google_pin_police1.png",
+  police: "/assets/images/static/google_pin_police.png",
 }
 
 const selectType = (event) => {

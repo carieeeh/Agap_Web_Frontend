@@ -9,47 +9,61 @@ import CustomButton from '@/views/components/Buttons/CustomButton.vue';
 import CheckboxInput from '@/views/components/Inputs/CheckboxInput.vue';
 
 const isSliderOpen = ref(false);
+const isEdit = ref(false);
 
 const tableHeader = [
-    { label: "Station Name", key: "station_name" },
-    { label: "Address", key: "station_address" },
+    { label: "Station Name", key: "name" },
+    { label: "Address", key: "address" },
     { label: "Total Rescuers", key: "total_rescuers" },
     { label: "Total Units", key: "total_units" },
-    { label: "Categories", key: "types" },
+    { label: "Categories", key: "categories" },
     { label: "Status", key: "status" },
 ];
 const station = useStationCollection();
 const categories = ["medical", "fire", "police", "earthquake", "flood"];
 const statusList = ["Active", "Inactive"];
-const tableItems = [
-    {
-        station_name: "Barangay 123 Fire Station",
-        station_address: "Barangay 123, Tondo, Manila City",
-        total_rescuers: "50",
-        total_units: "5",
-        types: "Fire, Earthquake, Flood",
-        status: "Active",
-    },
-    {
-        station_name: "Barangay 123 Police Substation",
-        station_address: "Barangay 123, Tondo, Manila City",
-        total_rescuers: "20",
-        total_units: "2",
-        types: "Fire, Earthquake, Flood, Police, Medical",
-        status: "Active",
-    },
-    {
-        station_name: "Barangay 1 Medical Clinic",
-        station_address: "Barangay 1, ABC, Random City",
-        total_rescuers: "5",
-        total_units: "1",
-        types: "Fire, Earthquake, Medical",
-        status: "Inactive",
-    },
-]
+// const tableItems = [
+//     {
+//         station_name: "Barangay 123 Fire Station",
+//         station_address: "Barangay 123, Tondo, Manila City",
+//         total_rescuers: "50",
+//         total_units: "5",
+//         types: "Fire, Earthquake, Flood",
+//         status: "Active",
+//     },
+//     {
+//         station_name: "Barangay 123 Police Substation",
+//         station_address: "Barangay 123, Tondo, Manila City",
+//         total_rescuers: "20",
+//         total_units: "2",
+//         types: "Fire, Earthquake, Flood, Police, Medical",
+//         status: "Active",
+//     },
+//     {
+//         station_name: "Barangay 1 Medical Clinic",
+//         station_address: "Barangay 1, ABC, Random City",
+//         total_rescuers: "5",
+//         total_units: "1",
+//         types: "Fire, Earthquake, Medical",
+//         status: "Inactive",
+//     },
+// ]
 
 function selectStation(event) {
-    console.log(event);
+    isEdit.value = true;
+    station.form = {
+        id: event.id,
+        name: event.name,
+        address: event.address,
+        station_code: event.station_code,
+        total_rescuers: event.total_rescuers,
+        total_units: event.total_units,
+        latitude: event.latitude,
+        longitude: event.longitude,
+        categories: event.categories,
+        contact: event.contact,
+        status: event.status,
+    };
     isSliderOpen.value = true;
 }
 
@@ -87,14 +101,20 @@ function close() {
 }
 
 function submit() {
-    station.createStation()
+    if (isEdit.value) {
+        station.updateStation()
+        isEdit.value = false
+    } else {
+        station.createStation()
+    }
+    isSliderOpen.value = false;
 }
 
 </script>
 
 <template>
     <div>
-        <CustomTable label="Manage Stations" :tableHeader="tableHeader" :items="tableItems"
+        <CustomTable label="Manage Stations" :tableHeader="tableHeader" :items="station.stations"
             @row-click="selectStation($event)" class="z-50">
             <template #buttons>
                 <div class="mx-8">
@@ -104,11 +124,14 @@ function submit() {
                     </button>
                 </div>
             </template>
+            <template v-slot:categories="slotProps">
+                {{ slotProps.data.categories.join(", ") }}
+            </template>
         </CustomTable>
         <SlideOver :isOpen="isSliderOpen" @close="isSliderOpen = false" title="Station Name">
             <template v-slot:content>
                 <InputForm type="text" label="Station name" v-model="station.form.name" />
-                <InputForm type="text" label="Station code" v-model="station.form.code" />
+                <InputForm type="text" label="Station code" v-model="station.form.station_code" />
                 <InputForm type="number" label="Total rescuers in station" v-model="station.form.total_rescuers" />
                 <InputForm type="number" label="Total units in station" v-model="station.form.total_units" />
                 <p>Location</p>
@@ -118,7 +141,7 @@ function submit() {
                 <p class="text-sm">Station categories : </p>
                 <div class="grid grid-cols-2 mt-1.5">
                     <CheckboxInput v-for="(category, index) in categories" :key="index" :label="category"
-                        @checked="addCategories($event)" />
+                        :checked="station.form.categories.includes(category)" @checked="addCategories($event)" />
                 </div>
                 <InputForm type="text" label="Station contact (email or phone number)" v-model="station.form.contact" />
                 <RadioInput label="Station status" :items="statusList" v-model="station.form.status" />

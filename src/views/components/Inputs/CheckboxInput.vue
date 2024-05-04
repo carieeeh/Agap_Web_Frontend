@@ -4,6 +4,10 @@ const props = defineProps({
     label: String,
     modelValue: {
         type: String, Number,
+    },
+    checked: {
+        type: Boolean,
+        default: false,
     }
 });
 
@@ -17,7 +21,7 @@ function select(event) {
 
 <template>
     <div>
-        <input type="checkbox" @change="select($event)">
+        <input type="checkbox" @change="select($event)" :checked="checked">
         <span class="text-sm px-2 capitalize">
             {{ label }}
         </span>
