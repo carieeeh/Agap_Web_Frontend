@@ -41,8 +41,8 @@ onMounted(() => {
 
 <template>
     <div class="relative">
-        <EmergencyInfo v-if="selectedEmergency" :isOpen="showModal" @close="showModal = false"
-            :emergency="selectedEmergency" :dismissible="false" @accept="accept($event)" />
+        <!-- <EmergencyInfo v-if="selectedEmergency" :isOpen="showModal" @close="showModal = false"
+            :emergency="selectedEmergency" :dismissible="false" @accept="accept($event)" /> -->
         <Sidebar />
         <main class="lg:pl-72">
             <div class="flex mt-5 pr-3 items-center justify-between">
