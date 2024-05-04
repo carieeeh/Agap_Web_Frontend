@@ -41,12 +41,17 @@ const selectEmergency = (emergency) => {
     emergencySelected.value = emergency;
 }
 
+function nextPage() {
+    const lastEmergency = emergencies.emergencies[emergencies.emergencies.length-1];
+    emergencies.getEmergencies(lastEmergency);
+}
+
 </script>
 
 <template>
     <div>
         <CustomTable label="Incident Reports" :tableHeader="tableHeader" :items="emergencies.emergencies"
-            @row-click="selectEmergency($event)" class="z-50">
+            @row-click="selectEmergency($event)" class="z-50" @prev="emergencies.getEmergencies()" @next="nextPage()">
             <template v-slot:resident_uid="slotProps">
                 {{ users.getUserFullName(slotProps.data.resident_uid) }}
             </template>

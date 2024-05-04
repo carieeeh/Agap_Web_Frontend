@@ -9,9 +9,7 @@ const route = useRoute();
 const dateFilter = reactive({ toDate: null, fromDate: null })
 const linkPath = computed(() => route.path == '/app/dashboard/detailed-table' ? '/app/dashboard' : '/app/dashboard/detailed-table')
 const linkLabel = computed(() => route.path == '/app/dashboard/detailed-table' ? 'Show line chart report >>' : 'Show detailed report on table >>')
-const sheets = reactive([
-  { name: "page 1", data: useEmergenciesCollection().emergencies }
-])
+
 provide('dateFilter', dateFilter);
 </script>
 

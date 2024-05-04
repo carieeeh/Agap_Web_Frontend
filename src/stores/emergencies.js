@@ -6,6 +6,7 @@ import {
   limit,
   orderBy,
   query,
+  startAfter,
   updateDoc,
 } from "firebase/firestore";
 import { useFireStoreDb } from "@/firebase";
@@ -78,16 +79,20 @@ export const useEmergenciesCollection = defineStore("emergencies", {
     },
   },
   actions: {
-    getEmergencies() {
+    getEmergencies(docId) {
       const db = useFireStoreDb; // Replace if using a different variable for the Firestore instance
 
       const colRef = collection(db, "/agap_collection/staging/emergencies");
       const allQuery = query(colRef);
-      const paginatedQuery = query(
-        colRef,
-        orderBy("created_at", "desc"),
-        limit(10)
-      ); // Order by create_at descending
+
+      const paginatedQuery = docId
+        ? query(
+            colRef,
+            orderBy("created_at", "desc"),
+            limit(10),
+            startAfter(docId)
+          )
+        : query(colRef, orderBy("created_at", "desc"), limit(10)); // Order by create_at descending
       const allEmergencies = useCollection(allQuery);
 
       this.totalEmergency = allEmergencies.length;
@@ -95,35 +100,6 @@ export const useEmergenciesCollection = defineStore("emergencies", {
       const emergenciesRef = useCollection(paginatedQuery); // Use the query in useCollection
       this.emergencies = emergenciesRef;
     },
-    // async getEmergencies() {
-    //   const db = useFireStoreDb; // Replace if using a different variable for the Firestore instance
-
-    //   const colRef = collection(db, "/agap_collection/staging/emergencies");
-    //   const allQuery = query(colRef);
-    //   const paginatedQuery = query(
-    //     colRef,
-    //     orderBy("created_at", "desc"),
-    //     limit(this.pageSize),
-    //     startAfter(this.currentPage * this.pageSize - this.pageSize) // Start after the last item of the previous page
-    //   );
-
-    //   const allEmergencies = useCollection(allQuery);
-
-    //   this.totalEmergency = allEmergencies.length;
-
-    //   const emergenciesRef = useCollection(paginatedQuery); // Use the query in useCollection
-    //   this.emergencies = emergenciesRef;
-    // },
-    // async nextPage() {
-    //   this.currentPage++;
-    //   await this.getEmergencies();
-    // },
-    // async prevPage() {
-    //   if (this.currentPage > 1) {
-    //     this.currentPage--;
-    //     await this.getEmergencies();
-    //   }
-    // },
     getEmergenciesFeedbacks() {
       this.emergencies_feedback = useCollection(
         collection(
