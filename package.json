@@ -31,6 +31,7 @@
     "vue-json-excel3": "^1.0.20",
     "vue-router": "^4.2.5",
     "vue3-carousel": "^0.3.1",
+    "vue3-xlsx": "^1.1.2",
     "vuefire": "^3.1.22"
   },
   "devDependencies": {

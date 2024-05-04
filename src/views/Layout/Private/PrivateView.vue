@@ -8,6 +8,7 @@ import { useEmergenciesCollection } from '@/stores/emergencies';
 import EmergencyInfo from "@/views/components/Dialogs/EmergencyInfo.vue";
 import Sidebar from '@/views/Layout/Private/SidebarNav.vue'
 import { useStationCollection } from '@/stores/station';
+import { useWarningMessage } from '@/composables/utilities';
 
 
 const emergencies = useEmergenciesCollection();
@@ -21,7 +22,7 @@ function accept(event) {
 
 function reject(event) {
     showModal.value = false;
-    emergencies.acceptEmergency(event);
+    emergencies.rejectEmergency(event);
 }
 
 watch(() => emergencies.emergencies, (newValue) => {
@@ -35,6 +36,14 @@ watch(() => useUsersCollection().users, () => {
     useUsersCollection().updateUserFCMToken(useAuthentication().user.uid);
 })
 
+watch(() => useUsersCollection().users, (newValue) => {
+    const index = newValue.findIndex(item => item.status === "pending");
+    console.log(index);
+    if (index != -1) {
+        useWarningMessage("Pending registrations.", "We have a new or pending rescuer registration.", "top-right")
+    }
+})
+
 onMounted(() => {
     useStationCollection().getStations();
     useUsersCollection().getUsers();
@@ -42,7 +51,7 @@ onMounted(() => {
     useEmergenciesCollection().getEmergencies();
     useEmergenciesCollection().getEmergenciesFeedbacks();
     useHandleMessaging();
-    
+
 })
 </script>
 

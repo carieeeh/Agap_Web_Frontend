@@ -50,14 +50,12 @@ export const useStationCollection = defineStore("station", {
       );
     },
     findNearestStation(emergency) {
-      console.log(emergency);
-      if (this.stations.length > 0) {
+      if (emergency && this.stations.length > 0) {
         const stations = useSortByDistance(
           this.stations,
           emergency.geopoint.latitude,
           emergency.geopoint.longitude
         );
-        console.log(stations);
         return stations;
       }
     },
