@@ -5,7 +5,7 @@ import { createApp } from "vue";
 import { createPinia } from "pinia";
 import piniaPersist from "pinia-plugin-persist";
 import { getMessaging, onMessage,  } from "firebase/messaging";
-
+import JsonExcel from "vue-json-excel3";
 import App from "./App.vue";
 import moshaToast from "mosha-vue-toastify";
 import "mosha-vue-toastify/dist/style.css";
@@ -20,7 +20,7 @@ const app = createApp(App);
 onMessage(getMessaging(firebaseApp), (payload) => {
   console.error("Message received. ", payload);
 });
-
+app.component("downloadExcel", JsonExcel);
 app.use(pinia);
 app.use(router);
 app.use(VueFire, {
