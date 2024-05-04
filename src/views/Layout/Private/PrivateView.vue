@@ -19,9 +19,15 @@ function accept(event) {
     emergencies.acceptEmergency(event);
 }
 
+function reject(event) {
+    showModal.value = false;
+    emergencies.acceptEmergency(event);
+}
+
 watch(() => emergencies.emergencies, (newValue) => {
     const index = newValue.findIndex(item => item.status === "pending");
     selectedEmergency.value = newValue[index];
+    useStationCollection().findNearestStation(selectedEmergency.value);
     showModal.value = true;
 }, { deep: true });
 
@@ -30,19 +36,20 @@ watch(() => useUsersCollection().users, () => {
 })
 
 onMounted(() => {
+    useStationCollection().getStations();
     useUsersCollection().getUsers();
     useEmergenciesCollection().getRescuerLocations();
     useEmergenciesCollection().getEmergencies();
     useEmergenciesCollection().getEmergenciesFeedbacks();
     useHandleMessaging();
-    useStationCollection().getStations();
+    
 })
 </script>
 
 <template>
     <div class="relative">
-        <!-- <EmergencyInfo v-if="selectedEmergency" :isOpen="showModal" @close="showModal = false"
-            :emergency="selectedEmergency" :dismissible="false" @accept="accept($event)" /> -->
+        <EmergencyInfo v-if="selectedEmergency" :isOpen="showModal" @close="showModal = false"
+            :emergency="selectedEmergency" :dismissible="false" @accept="accept($event)" @reject="reject($event)" />
         <Sidebar />
         <main class="lg:pl-72">
             <div class="flex mt-5 pr-3 items-center justify-between">

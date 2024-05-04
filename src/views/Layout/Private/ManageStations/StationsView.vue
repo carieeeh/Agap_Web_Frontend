@@ -22,32 +22,6 @@ const tableHeader = [
 const station = useStationCollection();
 const categories = ["medical", "fire", "police", "earthquake", "flood"];
 const statusList = ["Active", "Inactive"];
-// const tableItems = [
-//     {
-//         station_name: "Barangay 123 Fire Station",
-//         station_address: "Barangay 123, Tondo, Manila City",
-//         total_rescuers: "50",
-//         total_units: "5",
-//         types: "Fire, Earthquake, Flood",
-//         status: "Active",
-//     },
-//     {
-//         station_name: "Barangay 123 Police Substation",
-//         station_address: "Barangay 123, Tondo, Manila City",
-//         total_rescuers: "20",
-//         total_units: "2",
-//         types: "Fire, Earthquake, Flood, Police, Medical",
-//         status: "Active",
-//     },
-//     {
-//         station_name: "Barangay 1 Medical Clinic",
-//         station_address: "Barangay 1, ABC, Random City",
-//         total_rescuers: "5",
-//         total_units: "1",
-//         types: "Fire, Earthquake, Medical",
-//         status: "Inactive",
-//     },
-// ]
 
 function selectStation(event) {
     isEdit.value = true;

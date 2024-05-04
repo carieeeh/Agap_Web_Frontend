@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { useCollection } from "vuefire";
 import { useFireStoreDb } from "@/firebase";
-import { useErrorMessage, useSuccessMessage } from "@/composables/utilities";
+import { useErrorMessage, useSortByDistance, useSuccessMessage } from "@/composables/utilities";
 import { collection, addDoc, doc, setDoc } from "firebase/firestore";
 
 export const useStationCollection = defineStore("station", {
@@ -48,6 +48,18 @@ export const useStationCollection = defineStore("station", {
       this.stations = useCollection(
         collection(useFireStoreDb, "/agap_collection/staging/stations")
       );
+    },
+    findNearestStation(emergency) {
+      console.log(emergency);
+      if (this.stations.length > 0) {
+        const stations = useSortByDistance(
+          this.stations,
+          emergency.geopoint.latitude,
+          emergency.geopoint.longitude
+        );
+        console.log(stations);
+        return stations;
+      }
     },
     async createStation() {
       this.isLoading = true;

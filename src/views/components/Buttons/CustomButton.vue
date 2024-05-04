@@ -1,5 +1,5 @@
 <script setup>
-import { PencilSquareIcon, NoSymbolIcon, CheckCircleIcon, DocumentPlusIcon, TrashIcon, ArrowDownTrayIcon, ArrowPathIcon, Bars3CenterLeftIcon } from '@heroicons/vue/24/outline';
+import { PencilSquareIcon, NoSymbolIcon, CheckCircleIcon, DocumentPlusIcon, TrashIcon, ArrowDownTrayIcon, ArrowPathIcon, Bars3CenterLeftIcon, XCircleIcon } from '@heroicons/vue/24/outline';
 
 const props = defineProps({
     isLoading: {
@@ -24,6 +24,7 @@ const getIconType = () => {
         'clear': TrashIcon,
         'upload': CheckCircleIcon,
         'submit': DocumentPlusIcon,
+        'reject': XCircleIcon
     };
 
     return iconComponentMap[props.type] || Bars3CenterLeftIcon;
@@ -38,6 +39,7 @@ const getLabelType = () => {
         'clear' : "Clear",
         'upload' : "Upload",
         'submit' : "Submit",
+        'reject': "Reject"
     };
 
     return genericLabelMap[props.type] || props.label;

@@ -1,12 +1,19 @@
 import { defineStore } from "pinia";
 import { useCollection } from "vuefire";
-import { collection, doc, limit, orderBy, query, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  limit,
+  orderBy,
+  query,
+  updateDoc,
+} from "firebase/firestore";
 import { useFireStoreDb } from "@/firebase";
 import { useSendPushNotification } from "@/composables/firebase_messaging";
 import { useUsersCollection } from "./users";
 import {
   useErrorMessage,
-  useSortByDistance,
+  useSortByGeopoint,
   useSuccessMessage,
 } from "@/composables/utilities";
 
@@ -101,13 +108,25 @@ export const useEmergenciesCollection = defineStore("emergencies", {
     },
     findNearestRescuer(emergency) {
       if (this.rescuer_locations.length > 0) {
-        const rescuers = useSortByDistance(
+        const rescuers = useSortByGeopoint(
           this.rescuer_locations,
           emergency.geopoint.latitude,
           emergency.geopoint.longitude
         );
 
         return rescuers;
+      }
+    },
+    async rejectEmergency(emergency) {
+      if (emergency) {
+        emergency.docId = emergency.id;
+
+        const docRef = doc(
+          useFireStoreDb,
+          "/agap_collection/staging/emergencies",
+          emergency.docId
+        );
+        await updateDoc(docRef, { status: "rejected" });
       }
     },
     async acceptEmergency(emergency) {
@@ -130,18 +149,20 @@ export const useEmergenciesCollection = defineStore("emergencies", {
           );
 
           emergency.docId = emergency.id;
-          const rescuerData = {
-            purpose: "rescuer",
-            title: "EMERGENCY!.",
-            message: "A resident needs your help.",
-            emergency: JSON.stringify(emergency),
-          };
+
           const docRef = doc(
             useFireStoreDb,
             "/agap_collection/staging/emergencies",
             emergency.docId
           );
           await updateDoc(docRef, { status: "approved" });
+
+          const rescuerData = {
+            purpose: "rescuer",
+            title: "EMERGENCY!.",
+            message: "A resident needs your help.",
+            emergency: JSON.stringify(emergency),
+          };
 
           await useSendPushNotification(rescuerToken, rescuerData);
           useSuccessMessage(

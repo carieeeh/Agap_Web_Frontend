@@ -192,7 +192,7 @@ export const useDistanceCalculator = (lat1, lon1, lat2, lon2) => {
   return distance;
 };
 
-export const useSortByDistance = (array, refLat, refLng) => {
+export const useSortByGeopoint = (array, refLat, refLng) => {
   return array.sort((a, b) => {
     const distanceA = useDistanceCalculator(
       refLat,
@@ -209,6 +209,25 @@ export const useSortByDistance = (array, refLat, refLng) => {
     return distanceA - distanceB;
   });
 };
+
+export const useSortByDistance = (array, refLat, refLng) => {
+  return array.sort((a, b) => {
+    const distanceA = a.distance = useDistanceCalculator(
+      refLat,
+      refLng,
+      a.latitude,
+      a.longitude
+    );
+    const distanceB = b.distance = useDistanceCalculator(
+      refLat,
+      refLng,
+      b.latitude,
+      b.longitude
+    );
+    return distanceA - distanceB;
+  });
+};
+
 
 export const useMapOptions = {
   zoomControl: true,

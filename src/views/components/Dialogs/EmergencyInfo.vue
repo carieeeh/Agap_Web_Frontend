@@ -5,14 +5,19 @@ import { XCircleIcon } from '@heroicons/vue/24/outline';
 import { useFormatDate } from '@/composables/utilities.js';
 import CustomButton from '@/views/components/Buttons/CustomButton.vue';
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
-import DropdownList from '@/views/components/Dropdown/DropdownList.vue';
+import DropdownObject from '@/views/components/Dropdown/DropdownObject.vue';
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
+import { ref } from 'vue';
 
 defineProps({ isOpen: Boolean, emergency: Object, hasMap: { type: Boolean, default: true }, selectedEmergency: { type: Boolean, default: true } });
-const emits = defineEmits(['close', 'accept', 'decline'])
+const emits = defineEmits(['close', 'accept', 'decline', 'reject'])
 const station = useStationCollection();
 const accept = (emergency) => {
     emits('accept', emergency);
+}
+
+const reject = (emergency) => {
+    emits('reject', emergency);
 }
 
 const details = [
@@ -24,6 +29,13 @@ const details = [
     { label: "Description", key: "description" },
     { label: "Address", key: "address" },
 ];
+
+const dropdownLabel = ref("-- Select a station --");
+function selectStation(event) {
+    const distance = Math.abs(event.item.distance).toFixed(2)
+    dropdownLabel.value = `${distance} km ${event.item.name}`
+    console.log(event);
+}
 
 </script>
 
@@ -45,6 +57,7 @@ const details = [
                         <DialogPanel
                             class="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:p-6">
                             <div>
+                                <!-- TODO: these has error -->
                                 <div class="text-center">
                                     <DialogTitle as="h3"
                                         class="text-2xl font-semibold leading-6 text-gray-900 capitalize mb-8 flex">
@@ -65,9 +78,10 @@ const details = [
                                                     </p>
                                                 </div>
                                             </div>
-                                            <div class="grid justify-start">
-                                                <p class="">Stations (assign a station to respond) :</p>
-                                                <DropdownList label="" :default="0" property="name" :list="station.stations" />
+                                            <div class="grid justify-start mb-2">
+                                                <p class="text-left mb-1">Stations (assign a station to respond) :</p>
+                                                <DropdownObject :label="dropdownLabel" :list="station.stations"
+                                                    @select="selectStation($event)" />
                                             </div>
                                         </div>
                                         <div class="grid grid-cols-2 gap-x-4">
@@ -98,9 +112,11 @@ const details = [
                                 </div>
                             </div>
                             <div v-if="emergency?.status == 'pending'" class="flex justify-end">
-                                <div class="mt-5 w-52 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3">
+                                <div class="mt-5 w-80 sm:mt-6 sm:grid sm:grid-cols-3 sm:gap-3">
                                     <CustomButton type="cancel" @click="$emit('close')"
                                         class="bg-gray-300 text-white" />
+                                    <CustomButton type="reject" class="bg-red-400 text-white"
+                                        @click="reject(emergency)" />
                                     <CustomButton type="accept" class="bg-green-400 text-white"
                                         @click="accept(emergency)" />
                                 </div>
