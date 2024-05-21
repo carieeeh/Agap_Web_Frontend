@@ -3,6 +3,7 @@ const {getFirestore} = require("firebase-admin/firestore");
 const {getMessaging} = require("firebase-admin/messaging");
 const {onRequest} = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
+const xl = require("excel4node");
 
 const httpOptions = {cors: true};
 admin.initializeApp();
@@ -32,6 +33,65 @@ exports.sendNotification = onRequest({cors: true}, (req, res) => {
           data: error,
         });
       });
+});
+
+exports.jsonToExcel = onRequest({cors: true}, (req, res) => {
+  // Check if the request body is JSON
+  if (!req.is("application/json")) {
+    return res.status(400)
+        .send("Bad Request: Content-Type must be application/json");
+  }
+
+  // Get the JSON data from the request body
+  const jsonData = req.body.data;
+
+  const wb = new xl.Workbook();
+  const ws = wb.addWorksheet("Worksheet Name");
+
+  const headingColumnNames = [
+    "Name",
+    "Email",
+    "Mobile",
+  ];
+
+  // Write Column Title in Excel file
+  let headingColumnIndex = 1;
+  headingColumnNames.forEach((heading) => {
+    ws.cell(1, headingColumnIndex++)
+        .string(heading);
+  });
+
+  // Write Data in Excel file
+  let rowIndex = 2;
+  jsonData.forEach((record) => {
+    let columnIndex = 1;
+    Object.keys(record).forEach((columnName) => {
+      ws.cell(rowIndex, columnIndex++)
+          .string(record[columnName]);
+    });
+    rowIndex++;
+  });
+
+  const filePath = "/tmp/data.xlsx"; // Define the file path
+
+  wb.write(filePath, (err) => {
+    if (err) {
+      console.error("Error writing Excel file:", err);
+      res.status(500).send("Error generating Excel file");
+    } else {
+      console.log("Excel file generated successfully");
+
+      // Send the Excel file back to the client
+      res.sendFile(filePath, (err) => {
+        if (err) {
+          console.error("Error sending file:", err);
+          res.status(500).send("Error sending file");
+        } else {
+          console.log("Excel file sent successfully");
+        }
+      });
+    }
+  });
 });
 
 exports.findFreeRescuers = onRequest(httpOptions, async (req, res) => {

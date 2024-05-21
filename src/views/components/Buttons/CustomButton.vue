@@ -32,7 +32,7 @@ const getIconType = () => {
 
 const getLabelType = () => {
     const genericLabelMap = {
-        'accept' : "Accept",
+        'accept' : "Approve",
         'cancel' : "Cancel",
         'edit' : "Edit",
         'import' : "Import",

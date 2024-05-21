@@ -26,7 +26,7 @@ export const useStationCollection = defineStore("station", {
   },
   getters: {
     getStationByCategory: (state) => (category) =>
-      state.stations.filter((station) => station.category == category),
+      state.stations.filter((station) => station.categories.includes(category)),
   },
   actions: {
     resetForm() {

@@ -24,17 +24,22 @@ const details = [
     { label: "Status", key: "status" },
     { label: "Date", key: "created_at" },
     { label: "Type", key: "type" },
-    { label: "Rescuers", key: "rescuer_uids" },
     { label: "Total Units", key: "total_units" },
     { label: "Description", key: "description" },
     { label: "Address", key: "address" },
 ];
 
 const dropdownLabel = ref("-- Select a station --");
+const medicalUnit = ref("-- Select a station --");
+const totalUnit = ref(1);
 function selectStation(event) {
     const distance = Math.abs(event.item.distance).toFixed(2)
-    dropdownLabel.value = `${distance} km ${event.item.name}`
-    console.log(event);
+    dropdownLabel.value = `${distance} | km ${event.item.name}`
+}
+
+function selectMedicalUnit(event) {
+    const distance = Math.abs(event.item.distance).toFixed(2)
+    medicalUnit.value = `${distance} | km ${event.item.name}`
 }
 
 </script>
@@ -73,6 +78,9 @@ function selectStation(event) {
                                                         v-if="detail.key == 'created_at'">
                                                         {{ useFormatDate(emergency[detail.key]) }}
                                                     </p>
+                                                    <div v-else-if="detail.key == 'total_units'">
+                                                        <input type="number" v-model="totalUnit">
+                                                    </div>
                                                     <p v-else class="col-span-8 capitalize text-left">
                                                         {{ emergency[detail.key] }}
                                                     </p>
@@ -82,6 +90,11 @@ function selectStation(event) {
                                                 <p class="text-left mb-1">Stations (assign a station to respond) :</p>
                                                 <DropdownObject :label="dropdownLabel" :list="station.stations"
                                                     @select="selectStation($event)" />
+                                            </div>
+                                            <div class="grid justify-start mb-2 w-full">
+                                                <p class="text-left mb-1">Medical aid(optional) :</p>
+                                                <DropdownObject :label="medicalUnit" :list="station.getStationByCategory('medical')"
+                                                    @select="selectMedicalUnit($event)" />
                                             </div>
                                         </div>
                                         <div class="grid grid-cols-2 gap-x-4">
@@ -117,7 +130,7 @@ function selectStation(event) {
                                         class="bg-gray-300 text-white" />
                                     <CustomButton type="reject" class="bg-red-400 text-white"
                                         @click="reject(emergency)" />
-                                    <CustomButton type="accept" class="bg-green-400 text-white"
+                                    <CustomButton type="accept" class="bg-green-400 text-white w-fit"
                                         @click="accept(emergency)" />
                                 </div>
                             </div>

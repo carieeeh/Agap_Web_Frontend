@@ -1,7 +1,6 @@
 <script setup>
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { ChevronDownIcon } from '@heroicons/vue/20/solid'
-import { ref } from 'vue';
 
 const props = defineProps({
     list: { type: Array, default: () => [] },
@@ -12,10 +11,7 @@ const props = defineProps({
 
 const emits = defineEmits(['select']);
 
-const dropdownLabel = ref(props.label);
-
 function select(item, index) {
-    // dropdownLabel.value = props.property ? item[props.property] : item;
     emits('select', { item: props.property ? item[props.property] : item, index: index });
 }
 
@@ -26,7 +22,7 @@ function select(item, index) {
         <div>
             <MenuButton
                 class="inline-flex w-full justify-between gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                {{ dropdownLabel }}
+                {{ label }}
                 <ChevronDownIcon class="-mr-1 h-5 w-5 text-gray-400" aria-hidden="true" />
             </MenuButton>
         </div>

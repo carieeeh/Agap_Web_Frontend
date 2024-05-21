@@ -78,6 +78,7 @@ export const useEmergenciesCollection = defineStore("emergencies", {
           return itemMonthIndex === monthIndex && item.type === type;
         }).length;
     },
+    onlineRescuers: (state) => state.rescuer_locations.filter(rescuer => rescuer.status == "online"),
   },
   actions: {
     getEmergencies(docId) {
@@ -117,7 +118,7 @@ export const useEmergenciesCollection = defineStore("emergencies", {
     findNearestRescuer(emergency) {
       if (this.rescuer_locations.length > 0) {
         const rescuers = useSortByGeopoint(
-          this.rescuer_locations,
+          this.onlineRescuers,
           emergency.geopoint.latitude,
           emergency.geopoint.longitude
         );
@@ -152,18 +153,12 @@ export const useEmergenciesCollection = defineStore("emergencies", {
           const sortedRescuers = this.findNearestRescuer(emergency);
           console.log(sortedRescuers);
           await useSendPushNotification(token, data);
+
           const rescuerToken = useUsersCollection().getUserFCMToken(
             sortedRescuers[0].uid
           );
 
           emergency.docId = emergency.id;
-
-          const docRef = doc(
-            useFireStoreDb,
-            "/agap_collection/staging/emergencies",
-            emergency.docId
-          );
-          await updateDoc(docRef, { status: "approved" });
 
           const rescuerData = {
             purpose: "rescuer",
@@ -173,6 +168,14 @@ export const useEmergenciesCollection = defineStore("emergencies", {
           };
 
           await useSendPushNotification(rescuerToken, rescuerData);
+
+          const docRef = doc(
+            useFireStoreDb,
+            "/agap_collection/staging/emergencies",
+            emergency.docId
+          );
+          await updateDoc(docRef, { status: "approved" });
+
           useSuccessMessage(
             "Success",
             "Looking for free rescuer to respond...",

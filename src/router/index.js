@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { getCurrentUser } from "vuefire";
 import LoginView from "@/views/Layout/Public/LoginView.vue";
+import JsonToExcel from "@/views/Layout/Public/JsonToExcel.vue";
 
 import DashboardView from "@/views/Layout/Private/Dashboard/DashboardView.vue";
 import LineChart from "@/views/Layout/Private/Dashboard/LineChart.vue";
@@ -19,6 +20,14 @@ const router = createRouter({
       path: "/",
       name: "AGAP | Login",
       component: LoginView,
+      meta: {
+        middleware: "guest",
+      },
+    },
+    {
+      path: "/export",
+      name: "AGAP | Export",
+      component: JsonToExcel,
       meta: {
         middleware: "guest",
       },
