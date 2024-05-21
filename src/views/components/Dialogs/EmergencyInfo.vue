@@ -4,6 +4,7 @@ import { useStationCollection } from '@/stores/station';
 import { XCircleIcon } from '@heroicons/vue/24/outline';
 import { useFormatDate } from '@/composables/utilities.js';
 import CustomButton from '@/views/components/Buttons/CustomButton.vue';
+import { useEmergenciesCollection } from '@/stores/emergencies';
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
 import DropdownObject from '@/views/components/Dropdown/DropdownObject.vue';
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
@@ -12,6 +13,7 @@ import { ref } from 'vue';
 defineProps({ isOpen: Boolean, emergency: Object, hasMap: { type: Boolean, default: true }, selectedEmergency: { type: Boolean, default: true } });
 const emits = defineEmits(['close', 'accept', 'decline', 'reject'])
 const station = useStationCollection();
+const emergencies = useEmergenciesCollection();
 const accept = (emergency) => {
     emits('accept', emergency);
 }
@@ -65,9 +67,10 @@ function selectMedicalUnit(event) {
                                 <!-- TODO: these has error -->
                                 <div class="text-center">
                                     <DialogTitle as="h3"
-                                        class="text-2xl font-semibold leading-6 text-gray-900 capitalize mb-8 flex">
-                                        <p>Report details : &nbsp;</p>
-                                        {{ emergency?.type }}
+                                        class="text-2xl font-semibold leading-6 text-gray-900 mb-8 flex">
+                                        <p>Report Details : &nbsp;</p>
+                                        <p v-if="emergency?.status == 'additional'">Request for additional units</p>
+                                        <p v-else>{{ emergency?.type }}</p>
                                     </DialogTitle>
                                     <div class="mt-2">
                                         <div class="grid grid-cols-2 gap-x-4">
@@ -75,7 +78,15 @@ function selectMedicalUnit(event) {
                                                 <div class="grid grid-cols-12 my-1.5 gap-1">
                                                     <p class="col-span-4 text-left">{{ detail.label }} :</p>
                                                     <p class="col-span-8 capitalize text-left"
-                                                        v-if="detail.key == 'created_at'">
+                                                        v-if="detail.key == 'status' && emergency?.status == 'additional'">
+                                                        {{ emergencies.getEmergencyById(emergency.address)[0]['status'] }}
+                                                    </p>
+                                                    <p class="col-span-8 capitalize text-left"
+                                                        v-else-if="detail.key == 'address' && emergency?.status == 'additional'">
+                                                        {{ emergencies.getEmergencyById(emergency.address)[0]['address'] }}
+                                                    </p>
+                                                    <p class="col-span-8 capitalize text-left"
+                                                        v-else-if="detail.key == 'created_at'">
                                                         {{ useFormatDate(emergency[detail.key]) }}
                                                     </p>
                                                     <div v-else-if="detail.key == 'total_units'">
@@ -93,7 +104,8 @@ function selectMedicalUnit(event) {
                                             </div>
                                             <div class="grid justify-start mb-2 w-full">
                                                 <p class="text-left mb-1">Medical aid(optional) :</p>
-                                                <DropdownObject :label="medicalUnit" :list="station.getStationByCategory('medical')"
+                                                <DropdownObject :label="medicalUnit"
+                                                    :list="station.getStationByCategory('medical')"
                                                     @select="selectMedicalUnit($event)" />
                                             </div>
                                         </div>
@@ -124,7 +136,8 @@ function selectMedicalUnit(event) {
                                     </div>
                                 </div>
                             </div>
-                            <div v-if="emergency?.status == 'pending'" class="flex justify-end">
+                            <div v-if="emergency?.status == 'pending' || emergency?.status == 'additional'"
+                                class="flex justify-end">
                                 <div class="mt-5 w-80 sm:mt-6 sm:grid sm:grid-cols-3 sm:gap-3">
                                     <CustomButton type="cancel" @click="$emit('close')"
                                         class="bg-gray-300 text-white" />

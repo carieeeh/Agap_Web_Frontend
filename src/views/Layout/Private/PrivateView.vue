@@ -26,7 +26,7 @@ function reject(event) {
 }
 
 watch(() => emergencies.emergencies, (newValue) => {
-    const index = newValue.findIndex(item => item.status === "pending");
+    const index = newValue.findIndex(item => item.status === "pending" || item.status === "additional");
     selectedEmergency.value = newValue[index];
     useStationCollection().findNearestStation(selectedEmergency.value);
     showModal.value = true;

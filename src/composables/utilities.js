@@ -62,9 +62,7 @@ export const useGetAllMonths = (from, to) => {
 
   const previousMonthsArray = [];
   let year = currentYear;
-  console.log(fromYear, toYear);
-  console.log(fromYear <= toYear);
-  console.log(`${months[toMonth]} ${toYear}`);
+
   for (let i = fromIndex; i != toIndex + 1; i++) {
     year = fromYear > toYear ? fromYear : toYear;
     if (i == 12) {
@@ -74,7 +72,6 @@ export const useGetAllMonths = (from, to) => {
     previousMonthsArray.push(`${months[i]} ${year}`);
   }
 
-  console.log(previousMonthsArray);
   return previousMonthsArray;
 };
 

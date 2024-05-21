@@ -31,10 +31,14 @@ export const useEmergenciesCollection = defineStore("emergencies", {
     };
   },
   getters: {
+    getEmergencyById: (state) => {
+      return (emergencyId) =>
+        state.emergencies.filter((emergency) => emergency.id == emergencyId);
+    },
     getEmergencyByResidentUid: (state) => {
       return (resident_uid) =>
         state.emergencies.find(
-          (emergency) => (emergency.resident_uid = resident_uid)
+          (emergency) => emergency.resident_uid == resident_uid
         );
     },
     getEmergenciesByRescuerUid: (state) => {
@@ -67,21 +71,24 @@ export const useEmergenciesCollection = defineStore("emergencies", {
     totalEmergenciesByMonth: (state) => {
       return (monthIndex) =>
         state.emergencies.filter((item) => {
-          const itemMonthIndex = new Date(item.created_at).getMonth() + 1;
-          return itemMonthIndex === monthIndex;
+          const itemMonthIndex = new Date(Date(item.created_at));
+          const monthId = itemMonthIndex.getMonth() + 1;
+          return monthId === monthIndex;
         }).length;
     },
     totalEmergenciesByMonthType: (state) => {
       return (monthIndex, type) =>
         state.emergencies.filter((item) => {
-          const itemMonthIndex = new Date(item.created_at).getMonth() + 1;
-          return itemMonthIndex === monthIndex && item.type === type;
+          const itemMonthIndex = new Date(Date(item.created_at));
+          const monthId = itemMonthIndex.getMonth() + 1;
+          return monthId === monthIndex && item.type === type;
         }).length;
     },
-    onlineRescuers: (state) => state.rescuer_locations.filter(rescuer => rescuer.status == "online"),
+    onlineRescuers: (state) =>
+      state.rescuer_locations.filter((rescuer) => rescuer.status == "online"),
   },
   actions: {
-    getEmergencies(docId) {
+    getPaginatedEmergencies(docId) {
       const db = useFireStoreDb; // Replace if using a different variable for the Firestore instance
 
       const colRef = collection(db, "/agap_collection/staging/emergencies");
@@ -100,7 +107,12 @@ export const useEmergenciesCollection = defineStore("emergencies", {
       this.totalEmergency = allEmergencies.length;
 
       const emergenciesRef = useCollection(paginatedQuery); // Use the query in useCollection
-      this.emergencies = emergenciesRef;
+      this.paginatedEmergencies = emergenciesRef;
+    },
+    getEmergencies() {
+      this.emergencies = useCollection(
+        collection(useFireStoreDb, "/agap_collection/staging/emergencies")
+      );
     },
     getEmergenciesFeedbacks() {
       this.emergencies_feedback = useCollection(
