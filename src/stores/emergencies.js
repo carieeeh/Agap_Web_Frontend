@@ -84,6 +84,11 @@ export const useEmergenciesCollection = defineStore("emergencies", {
           return monthId === monthIndex && item.type === type;
         }).length;
     },
+    onlineRescuersPerStation: (state) => (stationCode) =>
+      state.rescuer_locations.filter(
+        (rescuer) =>
+          rescuer.status == "online" && rescuer.department == stationCode
+      ),
     onlineRescuers: (state) =>
       state.rescuer_locations.filter((rescuer) => rescuer.status == "online"),
   },
@@ -163,7 +168,6 @@ export const useEmergenciesCollection = defineStore("emergencies", {
             purpose: "approved",
           };
           const sortedRescuers = this.findNearestRescuer(emergency);
-          console.log(sortedRescuers);
           await useSendPushNotification(token, data);
 
           const rescuerToken = useUsersCollection().getUserFCMToken(

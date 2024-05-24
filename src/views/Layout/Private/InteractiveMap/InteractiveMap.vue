@@ -33,6 +33,14 @@ const selectAllType = () => {
   });
 }
 
+const selectStatus = (event) => {
+  console.log(event);
+  selectedEmergencies.value = emergencies.getEmergenciesByStatus(event.item);
+  selectedEmergencies.value.forEach(emergency => {
+    emergency.showInfo = false;
+  });
+}
+
 const showEmergencyInfo = (emergency, value) => {
   emergency.showInfo = value;
   selectedEmergency.value = emergency;
@@ -42,7 +50,7 @@ const showEmergencyInfo = (emergency, value) => {
 
 <template>
   <div>
-    <ReportList @select-type="selectType($event)" @select-all="selectAllType($event)" />
+    <ReportList @select-type="selectType($event)" @select-all="selectAllType()" @select-status="selectStatus($event)" :hasFilter="true" />
     <div class="flex pt-5">
       <GMapMap ref="myMap" :options="useMapOptions" :center="center" :zoom="15" map-type-id="roadmap"
         style="width: 76vw; height: 500px">

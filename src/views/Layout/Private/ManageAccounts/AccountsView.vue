@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive } from 'vue';
+import { ref, reactive, computed } from 'vue';
 import { useUsersCollection } from '@/stores/users';
 import { ArrowUpOnSquareIcon } from '@heroicons/vue/24/outline';
 import SlideOver from '@/views/components/SlideOver/SlideOver.vue';
@@ -12,19 +12,32 @@ const users = useUsersCollection();
 const selectedUser = ref(null);
 const isAdd = ref(false);
 
-const statusList = ["pending", "accepted", "deactivated", "blocked"];
+const statusList = ["pending", "accepted", "blocked"];
 const form = reactive({
   id: { value: '' },
   uid: { value: '' },
-  first_name: { value: '', label: 'First name' },
-  middle_name: { value: '', label: 'Middle name' },
-  last_name: { value: '', label: 'Last name' },
-  address: { value: '', label: 'Address' },
+  // first_name: { value: '', label: 'First name' },
+  // middle_name: { value: '', label: 'Middle name' },
+  // last_name: { value: '', label: 'Last name' },
+  full_name: { value: '', label: 'Full name' },
+  // address: { value: '', label: 'Address' },
   email: { value: '', label: 'Email' },
   contact_number: { value: '', label: 'Contact number', disabled: true },
   eme_contact_number: { value: '', label: 'Emergency contact number' },
-  status: {value: ''},
+  status: { value: '' },
   role: { value: '', label: 'User role', disabled: true }
+});
+
+const sortedItems = computed(() => {
+  return [...users.users].sort((a, b) => {
+    if (a.status === 'pending' && b.status !== 'pending') {
+      return -1;
+    }
+    if (a.status !== 'pending' && b.status === 'pending') {
+      return 1;
+    }
+    return 0;
+  });
 });
 
 function editUser(uid) {
@@ -50,7 +63,7 @@ function addUser() {
   sliderIsOpen.value = true;
   form.role.value = 'admin';
   form.contact_number.disabled = false;
-  form.status.value = "accepted"; 
+  form.status.value = "accepted";
 }
 
 function selectStatus(event) {
@@ -60,7 +73,7 @@ function selectStatus(event) {
 
 async function submit() {
   isAdd.value ? await users.createAdmin(form) : await users.updateUserDetails(form)
-  sliderIsOpen.value = false ;
+  sliderIsOpen.value = false;
 }
 </script>
 
@@ -104,12 +117,12 @@ async function submit() {
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-200 bg-white">
-                <tr v-for="user in users.users" :key="user.uid">
+                <tr v-for="user in sortedItems" :key="user.uid">
                   <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                    {{ users.getUserFullName(user.uid) }}
+                    {{ user.full_name ?? "No defined name" }}
                   </td>
                   <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    {{ user.email ?? "No email registered" }}
+                    {{ user.email == '' ?  "No email registered" : user.email ?? "No email registered" }}
                   </td>
                   <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                     {{ user.role }}
@@ -129,14 +142,14 @@ async function submit() {
             </table>
             <SlideOver :isOpen="sliderIsOpen" @close="closeSlider()" title="Edit user details">
               <template v-slot:content>
-                <DropdownList :list="statusList" :default="statusList.findIndex(item => item === form.status.value)" label="Account status" @select="selectStatus($event)" />
+                <DropdownList :list="statusList" :default="statusList.findIndex(item => item === form.status.value)"
+                  label="Account status" @select="selectStatus($event)" />
                 <div v-for="input in Object.keys(form)" :key="input">
                   <InputForm v-if="form[input].label" type="text" :label="form[input].label" v-model="form[input].value"
                     :disabled="form[input].disabled" />
                 </div>
                 <div class="flex justify-end mt-5 gap-3">
-                  <CustomButton type="custom" class="bg-green-400 text-white"
-                    @click="submit()">
+                  <CustomButton type="custom" class="bg-green-400 text-white" @click="submit()">
                     <ArrowUpOnSquareIcon class="h-5 w-5 shrink-0" />
                     <span>Submit</span>
                   </CustomButton>

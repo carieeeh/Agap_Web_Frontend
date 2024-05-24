@@ -79,11 +79,11 @@ function selectMedicalUnit(event) {
                                                     <p class="col-span-4 text-left">{{ detail.label }} :</p>
                                                     <p class="col-span-8 capitalize text-left"
                                                         v-if="detail.key == 'status' && emergency?.status == 'additional'">
-                                                        {{ emergencies.getEmergencyById(emergency.address)[0]['status'] }}
+                                                        {{ emergencies.getEmergencyById(emergency.id)[0]['status'] }}
                                                     </p>
                                                     <p class="col-span-8 capitalize text-left"
                                                         v-else-if="detail.key == 'address' && emergency?.status == 'additional'">
-                                                        {{ emergencies.getEmergencyById(emergency.address)[0]['address'] }}
+                                                        {{ emergencies.getEmergencyById(emergency.id)[0]['address'] }}
                                                     </p>
                                                     <p class="col-span-8 capitalize text-left"
                                                         v-else-if="detail.key == 'created_at'">
@@ -99,7 +99,7 @@ function selectMedicalUnit(event) {
                                             </div>
                                             <div class="grid justify-start mb-2">
                                                 <p class="text-left mb-1">Stations (assign a station to respond) :</p>
-                                                <DropdownObject :label="dropdownLabel" :list="station.stations"
+                                                <DropdownObject :label="dropdownLabel" :list="station.getStationByCategory(emergency?.type)"
                                                     @select="selectStation($event)" />
                                             </div>
                                             <div class="grid justify-start mb-2 w-full">

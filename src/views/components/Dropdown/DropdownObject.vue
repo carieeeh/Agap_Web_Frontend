@@ -31,7 +31,7 @@ function select(item, index) {
             enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100"
             leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100"
             leave-to-class="transform opacity-0 scale-95">
-            <MenuItems class="absolute left-0 z-10 mt-2 w-72 origin-top-right rounded-md bg-white shadow-lg">
+            <MenuItems class="absolute left-0 z-10 mt-2 w-fit h-32 overflow-y-auto origin-top-right rounded-md bg-white shadow-lg">
                 <div class="py-1">
                     <MenuItem v-slot="{ active }" v-for="(item, index) in list" :key="index"
                         @click="select(item, index)">

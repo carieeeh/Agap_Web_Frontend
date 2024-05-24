@@ -1,5 +1,5 @@
 <script setup>
-import { inject, reactive, ref, watch } from "vue";
+import { inject, onMounted, reactive, ref, watch } from "vue";
 import { Line } from "vue-chartjs";
 import { useEmergenciesCollection } from '@/stores/emergencies';
 import { useGetAllMonths } from '@/composables/utilities.js'
@@ -20,6 +20,10 @@ const selectedEmergencies = ref([]);
 const chartKey = ref(0);
 
 const selectType = (event) => {
+    console.log(event.key)
+    generateChartDataSet(dateFilter.fromDate, dateFilter.toDate, event.key);
+    chartKey.value++;
+
     selectedEmergencies.value = emergencies.getEmergenciesByType(event.key);
     selectedEmergencies.value.forEach(emergency => {
         emergency.showInfo = false;
@@ -27,13 +31,16 @@ const selectType = (event) => {
 }
 
 const selectAllType = () => {
+    generateChartDataSet(dateFilter.fromDate, dateFilter.toDate);
+    chartKey.value++;
+
     selectedEmergencies.value = emergencies.emergencies;
     selectedEmergencies.value.forEach(emergency => {
         emergency.showInfo = false;
     });
 }
 
-function generateChartDataSet(from, to) {
+function generateChartDataSet(from, to, type) {
     let fromDate, toDate;
 
     if (!from || !to) {
@@ -55,11 +62,23 @@ function generateChartDataSet(from, to) {
     const policeList = [];
 
     for (let i = fromMonth; i <= toMonth; i++) {
-        fireList.push(emergencies.totalEmergenciesByMonthType(i, 'fire'));
-        earthList.push(emergencies.totalEmergenciesByMonthType(i, 'earthquake'));
-        floodList.push(emergencies.totalEmergenciesByMonthType(i, 'medical'));
-        medicalList.push(emergencies.totalEmergenciesByMonthType(i, 'flood'));
-        policeList.push(emergencies.totalEmergenciesByMonthType(i, 'police'));
+        if (type == null) {
+            fireList.push(emergencies.totalEmergenciesByMonthType(i, 'fire'));
+            earthList.push(emergencies.totalEmergenciesByMonthType(i, 'earthquake'));
+            floodList.push(emergencies.totalEmergenciesByMonthType(i, 'medical'));
+            medicalList.push(emergencies.totalEmergenciesByMonthType(i, 'flood'));
+            policeList.push(emergencies.totalEmergenciesByMonthType(i, 'police'));
+        } else if (type == 'fire') {
+            fireList.push(emergencies.totalEmergenciesByMonthType(i, 'fire'));
+        } else if (type == 'earthquake') {
+            earthList.push(emergencies.totalEmergenciesByMonthType(i, 'earthquake'));
+        } else if (type == 'medical') {
+            medicalList.push(emergencies.totalEmergenciesByMonthType(i, 'medical'));
+        } else if (type == 'flood') {
+            floodList.push(emergencies.totalEmergenciesByMonthType(i, 'flood'));
+        } else if (type == 'police') {
+            policeList.push(emergencies.totalEmergenciesByMonthType(i, 'police'));
+        } 
     }
 
     chartData.datasets = [
@@ -103,13 +122,18 @@ function generateChartDataSet(from, to) {
 }
 
 watch(dateFilter, () => {
-    console.log(dateFilter);
     chartData.labels = useGetAllMonths(dateFilter.fromDate, dateFilter.toDate);
     generateChartDataSet(dateFilter.fromDate, dateFilter.toDate);
     chartKey.value++;
 }, { deep: true });
 
 watch(() => emergencies.emergencies, () => {
+    chartData.labels = useGetAllMonths(dateFilter.fromDate, dateFilter.toDate);
+    generateChartDataSet(dateFilter.fromDate, dateFilter.toDate);
+    chartKey.value++;
+});
+
+onMounted(() => {
     chartData.labels = useGetAllMonths(dateFilter.fromDate, dateFilter.toDate);
     generateChartDataSet(dateFilter.fromDate, dateFilter.toDate);
     chartKey.value++;
