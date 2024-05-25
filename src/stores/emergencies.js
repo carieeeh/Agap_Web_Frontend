@@ -161,6 +161,8 @@ export const useEmergenciesCollection = defineStore("emergencies", {
           const token = useUsersCollection().getUserFCMToken(
             emergency.resident_uid
           );
+          console.log(this.rescuer_locations, emergency);
+
           const data = {
             title: "Emergency report approved.",
             message: "Wait for a rescuer to accept your emergency...",
@@ -175,7 +177,6 @@ export const useEmergenciesCollection = defineStore("emergencies", {
           );
 
           emergency.docId = emergency.id;
-
           const rescuerData = {
             purpose: "rescuer",
             title: "EMERGENCY!.",
