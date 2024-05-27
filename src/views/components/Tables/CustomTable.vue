@@ -1,11 +1,46 @@
 <script setup>
+import { ref, computed } from 'vue';
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/vue/24/outline";
-defineProps({ tableHeader: Array, items: Array, users: Array, label: String })
+const  props = defineProps({ tableHeader: Array, items: Array, users: Array, label: String })
 const emits = defineEmits(['row-click', 'next', 'prev']);
 
 const rowClick = (event) => {
     emits('row-click', event)
 }
+// const searchQuery = ref('');
+const filteredItems = ref(props.items);
+const currentPage = ref(1);
+const itemsPerPage = 10;
+const totalPages = computed(() => Math.ceil(filteredItems.value.length / itemsPerPage));
+
+// function search() {
+//     const query = searchQuery.value.toLowerCase();
+//     filteredItems.value = props.items?.filter(item => item?.role.toLowerCase().includes(query) || item?.full_name?.toLowerCase().includes(query));
+//     currentPage.value = 1; // Reset to first page on search
+// }
+
+
+const nextPage = () => {
+    if (currentPage.value < totalPages.value) {
+        currentPage.value += 1;
+    }
+};
+
+const prevPage = () => {
+    if (currentPage.value > 1) {
+        currentPage.value -= 1;
+    }
+};
+
+const paginatedItems = computed(() => {
+    const start = (currentPage.value - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    return filteredItems.value.slice(start, end);
+});
+
+// onMounted(() => {
+//     search();
+// })
 </script>
 
 <template>
@@ -17,13 +52,20 @@ const rowClick = (event) => {
                         <h1 class="text-base font-semibold leading-6 text-gray-900">{{ label }}</h1>
                         <slot name="buttons">
 
-                        </slot> 
+                        </slot>
                     </div>
+                    <!-- <div class="border p-1 rounded-md">
+                        <input placeholder="Search ..." class="rounded-sm focus:outline-none" type="text"
+                            @change="search()" v-model="searchQuery">
+                        <button class="bg-red-500 rounded-md p-2 text-sm text-white hover:bg-red-600" @click="search()">
+                            Search
+                        </button>
+                    </div> -->
                     <div class="flex gap-5">
-                        <button class="rounded-md bg-primaryRed text-white p-1" @click="$emit('prev')">
+                        <button class="rounded-md bg-primaryRed text-white p-1" @click="prevPage()">
                             <ChevronLeftIcon class="h-5 w-5 shrink-0" />
                         </button>
-                        <button class="rounded-md bg-primaryRed text-white p-1" @click="$emit('next')">
+                        <button class="rounded-md bg-primaryRed text-white p-1" @click="nextPage()">
                             <ChevronRightIcon class="h-5 w-5 shrink-0" />
                         </button>
                     </div>
@@ -43,7 +85,7 @@ const rowClick = (event) => {
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200 bg-white">
-                                    <tr v-for="(item, index) in items" :key="index" @click="rowClick(item)"
+                                    <tr v-for="(item, index) in paginatedItems" :key="index" @click="rowClick(item)"
                                         class="hover:bg-slate-200 hover:cursor-pointer">
                                         <td v-for="header in tableHeader" :key="header.key"
                                             class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">

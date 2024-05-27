@@ -1,7 +1,7 @@
 <script setup>
-import { ref, reactive, computed } from 'vue';
+import { ref, reactive, computed, onMounted } from 'vue';
 import { useUsersCollection } from '@/stores/users';
-import { ArrowUpOnSquareIcon } from '@heroicons/vue/24/outline';
+import { ArrowUpOnSquareIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/24/outline';
 import SlideOver from '@/views/components/SlideOver/SlideOver.vue';
 import CustomButton from '@/views/components/Buttons/CustomButton.vue';
 import DropdownList from '@/views/components/Dropdown/DropdownList.vue';
@@ -11,6 +11,8 @@ const sliderIsOpen = ref(false);
 const users = useUsersCollection();
 const selectedUser = ref(null);
 const isAdd = ref(false);
+const searchQuery = ref('');
+const filteredItems = ref([]);
 
 const statusList = ["pending", "accepted", "blocked"];
 const form = reactive({
@@ -22,11 +24,16 @@ const form = reactive({
   full_name: { value: '', label: 'Full name' },
   // address: { value: '', label: 'Address' },
   email: { value: '', label: 'Email' },
+  department: { value: '', label: 'Station code' },
   contact_number: { value: '', label: 'Contact number', disabled: true },
   eme_contact_number: { value: '', label: 'Emergency contact number' },
   status: { value: '' },
   role: { value: '', label: 'User role', disabled: true }
 });
+
+const currentPage = ref(1);
+const itemsPerPage = 10;
+const totalPages = computed(() => Math.ceil(filteredItems.value.length / itemsPerPage));
 
 const sortedItems = computed(() => {
   return [...users.users].sort((a, b) => {
@@ -75,6 +82,35 @@ async function submit() {
   isAdd.value ? await users.createAdmin(form) : await users.updateUserDetails(form)
   sliderIsOpen.value = false;
 }
+
+function search() {
+  const query = searchQuery.value.toLowerCase();
+  filteredItems.value = sortedItems.value.filter(item => item?.role.toLowerCase().includes(query) || item?.full_name?.toLowerCase().includes(query));
+  currentPage.value = 1; // Reset to first page on search
+}
+
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value += 1;
+  }
+};
+
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value -= 1;
+  }
+};
+
+const paginatedItems = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  return filteredItems.value.slice(start, end);
+});
+
+onMounted(() => {
+  search();
+})
 </script>
 
 <template>
@@ -85,6 +121,21 @@ async function submit() {
         <p class="mt-2 text-sm text-gray-700">
           View, update users details or approve rescuers registration.
         </p>
+      </div>
+      <div class="border p-1 rounded-md">
+        <input placeholder="Search ..." class="rounded-sm focus:outline-none" type="text" @change="search()"
+          v-model="searchQuery">
+        <button class="bg-red-500 rounded-md p-2 text-sm text-white hover:bg-red-600" @click="search()">
+          Search
+        </button>
+      </div>
+      <div class="flex gap-5 ml-5">
+        <button class="rounded-md bg-primaryRed text-white p-1" @click="prevPage()">
+          <ChevronLeftIcon class="h-5 w-5 shrink-0" />
+        </button>
+        <button class="rounded-md bg-primaryRed text-white p-1" @click="nextPage()">
+          <ChevronRightIcon class="h-5 w-5 shrink-0" />
+        </button>
       </div>
       <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none z-10">
         <button class="bg-red-500 rounded-md p-2 text-sm text-white hover:bg-red-600" @click="addUser()">
@@ -117,12 +168,12 @@ async function submit() {
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-200 bg-white">
-                <tr v-for="user in sortedItems" :key="user.uid">
+                <tr v-for="user in paginatedItems" :key="user.uid">
                   <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                     {{ user.full_name ?? "No defined name" }}
                   </td>
                   <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    {{ user.email == '' ?  "No email registered" : user.email ?? "No email registered" }}
+                    {{ user.email == '' ? "No email registered" : user.email ?? "No email registered" }}
                   </td>
                   <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                     {{ user.role }}
@@ -145,15 +196,19 @@ async function submit() {
                 <DropdownList :list="statusList" :default="statusList.findIndex(item => item === form.status.value)"
                   label="Account status" @select="selectStatus($event)" />
                 <div v-for="input in Object.keys(form)" :key="input">
-                  <InputForm v-if="form[input].label" type="text" :label="form[input].label" v-model="form[input].value"
-                    :disabled="form[input].disabled" />
+                  <div v-if="input == 'department'">
+                    <InputForm v-if="form['role'].value == 'rescuer'" type="text" :label="form[input].label"
+                      v-model="form[input].value" :disabled="form[input].disabled" />
+                  </div>
+                  <InputForm v-else-if="form[input].label" type="text" :label="form[input].label"
+                    v-model="form[input].value" :disabled="form[input].disabled" />
                 </div>
                 <div class="flex justify-end mt-5 gap-3">
                   <CustomButton type="custom" class="bg-green-400 text-white" @click="submit()">
                     <ArrowUpOnSquareIcon class="h-5 w-5 shrink-0" />
                     <span>Submit</span>
                   </CustomButton>
-                  <CustomButton type="cancel" @click="sliderIsOpen = true" class="bg-gray-400 text-white" />
+                  <CustomButton type="cancel" @click="closeSlider()" class="bg-gray-400 text-white" />
                 </div>
               </template>
             </SlideOver>

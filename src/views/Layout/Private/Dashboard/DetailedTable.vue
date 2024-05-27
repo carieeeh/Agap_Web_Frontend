@@ -16,8 +16,8 @@ const sliderIsOpen = ref(false);
 const emergencySelected = ref(null);
 const tableHeader = [
     { label: "Reporter Name", key: "resident_uid" },
-    { label: "Rescuer Name", key: "rescuer_uids" },
-    { label: "Department", key: "type" },
+    { label: "Station", key: "rescuer_uids" },
+    // { label: "Department", key: "type" },
     { label: "Total units", key: "total_units" },
     { label: "Category", key: "type" },
     { label: "Status", key: "status" },

@@ -78,7 +78,7 @@ function generateChartDataSet(from, to, type) {
             floodList.push(emergencies.totalEmergenciesByMonthType(i, 'flood'));
         } else if (type == 'police') {
             policeList.push(emergencies.totalEmergenciesByMonthType(i, 'police'));
-        } 
+        }
     }
 
     chartData.datasets = [
@@ -97,26 +97,25 @@ function generateChartDataSet(from, to, type) {
             backgroundColor: "#FFC700"
         },
         {
-            data: floodList,
+            data: medicalList,
             label: "Medical",
             borderColor: "#22C55E",
             fill: true,
             backgroundColor: "#22C55E"
         },
         {
-            data: medicalList,
+            data: floodList,
             label: "Flood",
-            borderColor: "#2A67EB",
+            borderColor: "#38BDF8",
             fill: true,
-            backgroundColor: "#2A67EB"
-
+            backgroundColor: "#38BDF8"
         },
         {
             data: policeList,
             label: "Police",
-            borderColor: "#38BDF8",
+            borderColor: "#2A67EB",
             fill: true,
-            backgroundColor: "#38BDF8"
+            backgroundColor: "#2A67EB"
         },
     ]
 }

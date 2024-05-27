@@ -5,7 +5,12 @@ import { useSendEmail } from "@/composables/emails";
 import { useAuthentication } from "@/stores/authentication";
 import { useFCMDeviceToken } from "@/composables/firebase_messaging";
 import { useErrorMessage, useSuccessMessage } from "@/composables/utilities";
-import { collection, addDoc, doc, setDoc, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  doc,
+  /* setDoc, */ updateDoc,
+} from "firebase/firestore";
 
 export const useUsersCollection = defineStore("users", {
   state: () => {
@@ -87,7 +92,7 @@ export const useUsersCollection = defineStore("users", {
           "/agap_collection/staging/users",
           data.id.value
         );
-        await setDoc(docRef, mapData);
+        await updateDoc(docRef, mapData);
         useSuccessMessage("Success", "User details updated.", "top-right");
       } catch (error) {
         console.error(error);

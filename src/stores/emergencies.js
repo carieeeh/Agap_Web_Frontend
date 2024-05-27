@@ -201,7 +201,7 @@ export const useEmergenciesCollection = defineStore("emergencies", {
         } catch (error) {
           useErrorMessage(
             "Oops",
-            `Failed accepting emergency. code: ${error.code}`,
+            `Failed accepting emergency.: no rescuer found, try again later.`,
             "top-right"
           );
         }

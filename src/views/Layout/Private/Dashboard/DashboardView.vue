@@ -1,9 +1,11 @@
 <script setup>
 import { useRoute } from "vue-router";
 import DateInput from "@/views/components/Inputs/DateInput.vue";
+import { useUsersCollection } from '@/stores/users';
 import { computed, reactive, provide } from "vue";
 import { useEmergenciesCollection } from "@/stores/emergencies";
 // import { useSendPushNotification } from "@/composables/firebase_messaging";
+const users = useUsersCollection();
 
 const route = useRoute();
 const dateFilter = reactive({ toDate: null, fromDate: null })
@@ -16,7 +18,21 @@ function filter() {
     console.log(useEmergenciesCollection().getEmergenciesByDate(dateFilter.toDate, dateFilter.fromDate));
   }
 }
-
+const formattedEmergencies = computed(() => useEmergenciesCollection().emergencies.map(
+  emergency => {
+    return {
+      "full_name": users.getUserFullName(emergency?.resident_uid),
+      "created_at": Date(emergency?.created_at),
+      "description": emergency?.description,
+      "address": emergency?.address,
+      "station": emergency?.rescuer_uids,
+      "status": emergency?.status,
+      "type": emergency?.type,
+      "latitude": emergency?.geopoint.latitude,
+      "longitude": emergency?.geopoint.longitude,
+    }
+  }
+))
 provide('dateFilter', dateFilter);
 </script>
 
@@ -34,7 +50,7 @@ provide('dateFilter', dateFilter);
           Filter
         </button>
         <!-- https://www.npmjs.com/package/vue-json-excel3 -->
-        <download-excel :data="useEmergenciesCollection().emergencies"
+        <download-excel :data="formattedEmergencies"
           class="lg:col-span-2 md:truncate bg-green-300 rounded-md h-8 w-32 flex items-center justify-center gap-3 hover:cursor-pointer hover:bg-green-400 lg:w-full">
           <!-- <ArrowDownTrayIcon class="w-5 h-5 shrink-0" /> -->
           <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 32 32">
